@@ -123,7 +123,7 @@ get the position and orientation represented by a 16 float array
 suitable for use as an OpenGL Matrix
 
 #### ``void bodySetRotation(void* body, float yaw, float pitch, float roll);``
-intended to be used to set in initial rotation of a body, y,p & r are in
+intended only to be used to set an initial rotation of a body, y,p & r are in
 radians 0-2pi
 
 #### ``void bodyApplyTorque(void* body, Vec* t);``
