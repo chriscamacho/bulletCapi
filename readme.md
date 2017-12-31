@@ -36,6 +36,13 @@ complete independence from the bullet build system.
 Once you have verified that the CAPI example works you can move onto the
 simple graphical example.
 
+alternativly if you are not bothered about playing with the console test
+you can just do
+
+    make lib/libbullet.a
+
+in addition to libbullet.a you will need capi.o (compiled from capi.cpp)
+
 ### gluTest
 This is a horror, no truly, its NOT an example of how you should produce
 graphics.  That said its a minimum amount of code that can show some
@@ -45,6 +52,10 @@ that could enmesh it into a very specific use case...
 This example does show using some basic modifications to a body such as
 changing basic properties like friction and restitution to make a 
 pleasing demonstration
+
+external to this folder gluTest links in libbullet.a and compiles
+capi.cpp and links that to main.o the C frontend of this example.
+
 
 ### cppHello
 This is a simple cpp reference example, building this with libraries
