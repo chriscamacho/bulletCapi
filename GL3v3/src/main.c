@@ -186,60 +186,14 @@ int main(void) {
         stepWorld(uni, 1./60., 8);
 
         a+=0.01;
-        kmMat4 mod,tm,mvp,mv;
+        kmMat4 mod,mvp,mv;
 
         lightDir.x = cos(-a*6);
         lightDir.y = sin(-a*6);
         lightDir.z = 1;
 
         kmVec3Normalize(&lightDir, &lightDir);
-        /*
-        //-----
-                kmMat4Identity(&mod);
-                kmMat4Translation(&mod, -1.5,0,0);
-        //        kmMat4RotationYawPitchRoll(&tm, a, a*1.5, 0 );
-                kmMat4RotationYawPitchRoll(&tm, 0,0, 0 );
-                kmMat4Multiply(&mod,&mod,&tm);
 
-                kmMat4Assign(&mvp, &vp);
-                kmMat4Multiply(&mvp, &mvp, &mod);
-
-                kmMat4Assign(&mv, &view);
-                kmMat4Multiply(&mv, &mv, &mod);
-
-                drawObj(&boxObj, 1, &mvp, &mv, lightDir, viewDir);
-        //----
-                kmMat4Identity(&mod);
-                kmMat4Translation(&mod, 1.5,0,0);
-        //        kmMat4RotationYawPitchRoll(&tm, a, a*1.5, 0 );
-                kmMat4RotationYawPitchRoll(&tm, 0,0, 0 );
-                kmMat4Multiply(&mod,&mod,&tm);
-
-                kmMat4Assign(&mvp, &vp);
-                kmMat4Multiply(&mvp, &mvp, &mod);
-
-                kmMat4Assign(&mv, &view);
-                kmMat4Multiply(&mv, &mv, &mod);
-
-
-                drawObj(&ballObj, 0,&mvp, &mv, lightDir, viewDir);
-        //-----
-                kmMat4Identity(&mod);
-                kmMat4Translation(&mod, 0,0,0);
-        //        kmMat4RotationYawPitchRoll(&tm, a, a*1.5, 0 );
-                kmMat4RotationYawPitchRoll(&tm, 0,0, 0 );
-                kmMat4Multiply(&mod,&mod,&tm);
-
-                kmMat4Assign(&mvp, &vp);
-                kmMat4Multiply(&mvp, &mvp, &mod);
-
-                kmMat4Assign(&mv, &view);
-                kmMat4Multiply(&mv, &mv, &mod);
-
-
-                drawObj(&drumObj, 2,&mvp, &mv, lightDir, viewDir);
-        //-----
-        */
         for (int i=0; i<30; i++) {
             bodyGetOpenGLMatrix(fallingBodies[i], (float*)&mod);
 
@@ -250,13 +204,13 @@ int main(void) {
             kmMat4Multiply(&mv, &mv, &mod);
             int s = bodyGetShapeType(fallingBodies[i]);
             if (s==T_BOX) {
-                drawObj(&boxObj, 0,&mvp, &mv, lightDir, viewDir);
+                drawObj(&boxObj, 1,&mvp, &mv, lightDir, viewDir);
             }
             if (s==T_SPHERE) {
                 drawObj(&ballObj, 0,&mvp, &mv, lightDir, viewDir);
             }
             if (s==T_CYLINDER) {
-                drawObj(&drumObj, 0,&mvp, &mv, lightDir, viewDir);
+                drawObj(&drumObj, 2,&mvp, &mv, lightDir, viewDir);
 			}
         }
 
