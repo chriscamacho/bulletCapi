@@ -34,11 +34,15 @@ void bodyGetOpenGLMatrix(void* body, float* m);
 void bodyApplyImpulse(void* body, Vec* i, Vec* p);
 void bodyApplyTorque(void* body, Vec* t);
 void bodyGetLinearVelocity(void* body, Vec* v);
+void bodySetLinearVelocity(void* body, Vec v);
 void bodyGetAngularVelocity(void* body, Vec* v);
 void bodySetRotation(void* body, float yaw, float pitch, float roll);
 void bodySetRestitution(void* body, float r);
 void bodySetFriction(void* s, float f);
 float bodyGetFriction(void* s);
+
+// should only be used when you need no "teleport" an object not move it
+void bodySetPosition(void* body, Vec pos );
 
 int bodyGetShapeType(void* body);
 

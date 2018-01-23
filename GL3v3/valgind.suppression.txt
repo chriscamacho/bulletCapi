@@ -1,4 +1,40 @@
 {
+   cond
+   Memcheck:Cond
+   fun:sqrtf
+}
+
+{
+	cond
+   Memcheck:Cond
+   fun:kmVec3Normalize
+}
+
+{
+	cond
+   Memcheck:Cond
+   fun:__cos_avx
+}
+
+{
+	cond
+   Memcheck:Cond
+   fun:__sin_avx
+}
+
+{
+   val8
+   Memcheck:Value8
+   fun:do_cos
+}
+
+{
+   val8
+   Memcheck:Value8
+   fun:do_sin
+}
+
+{
    ignore video driver
    Memcheck:Addr8
    obj:/usr/lib/xorg/modules/drivers/i965_dri.so

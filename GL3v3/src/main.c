@@ -14,8 +14,10 @@
 #include "phys.h"
 
 void* uni;
-//void* fallingBodies[30];
-phys_t phys[30];
+
+#define NumObj 200
+
+phys_t phys[NumObj];
 
 kmVec3 pEye,pCentre,pUp,viewDir;
 kmVec3 lightDir;
@@ -120,16 +122,12 @@ int main(void) {
     loadObjCopyShader(&ballObj,"data/ball.gbo", &boxObj);
     loadObjCopyShader(&drumObj,"data/drum.gbo", &boxObj);
 
-    lightDir.x = 0.7;
-    lightDir.y = 0.7;
-    lightDir.z = 0.7;
-    kmVec3Normalize(&lightDir, &lightDir);
 
     kmMat4Identity(&view);
 
     pEye.x = 0;
-    pEye.y = 8;
-    pEye.z = 12;
+    pEye.y = 12;
+    pEye.z = 30;
     pCentre.x = 0;
     pCentre.y = 0;
     pCentre.z = 0;
@@ -156,11 +154,11 @@ int main(void) {
     uni = createUniverse();
     setGravity(uni, 0,-9.98,0);
 
-    void* groundShape = createBoxShape(uni, 100, 5, 100);	// size 100,100,5
+    void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 100,100,5
     void* groundBody = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
     bodySetRestitution(groundBody, .9);
 
-    for (int i=0; i<30; i++) {
+    for (int i=0; i<NumObj; i++) {
         void* fs;
         float sx,sy,sz;
         
@@ -168,30 +166,30 @@ int main(void) {
         sy = 0.5f+rnd(1.0f);
         sz = 0.5f+rnd(1.0f);
         
-        if (i<5) {
+        if (i<NumObj*.2f) {
             fs = createBoxShape(uni, sx, sy, sz);
         } else {
-			if (i<10) {
+			if (i<NumObj*.4f) {
 				sy=sx;
 				sz=sx;
 				fs = createSphereShape(uni, sx);
 			} else {
 				sx/=2.0f;
 				sy = sx;
+				sz*=2.0f;
 				fs = createCylinderShape(uni, sx, sz);
 			}
         }
         phys[i].sz.x = sx;
         phys[i].sz.y = sy;
         phys[i].sz.z = sz;
-        float px = 5.f-rnd(10.f);
-        float py = 8.f-rnd(5.f);
-        float pz = 5.f-rnd(5.f);
+        float px = 10.f-rnd(20.f);
+        float py = 30.f-rnd(8.f);
+        float pz = 10.f-rnd(20.f);
         phys[i].obj = createBody(uni, fs, 1,  px, py, pz);
-        //fallingBodies[i] = createBody(uni, fs, 1,  0,(i-2)*1.1, 0);
         
-        bodySetRotation(phys[i].obj, .7,0,0);
-        bodySetFriction(phys[i].obj, .8);
+//        bodySetRotation(phys[i].obj, .7,0,0);
+        bodySetFriction(phys[i].obj, .4);
     }
 
     float a;
@@ -208,28 +206,40 @@ int main(void) {
         glClearColor(0.25f,0.5f,1.f,1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        stepWorld(uni, 1./60., 8);
+        stepWorld(uni, 1.f/60.f, 8);
 
-        a+=0.01;
+        a+=0.01f;
         kmMat4 mod,mvp,mv;
 
-        lightDir.x = cos(-a*6);
-        lightDir.y = sin(-a*6);
-        lightDir.z = 1;
+        lightDir.x = cos(a*3.f)/2.f;
+        lightDir.y = 1.f;
+        lightDir.z = sin(a*3.f)/2.f;
 
         kmVec3Normalize(&lightDir, &lightDir);
 
-        for (int i=0; i<30; i++) {
-            //bodyGetOpenGLMatrix(fallingBodies[i], (float*)&mod);
+        for (int i=0; i<NumObj; i++) {
+			
+			Vec p;
+			bodyGetPosition(phys[i].obj, &p);
+			if (p.y<-10) {
+				p.x=0;
+				p.y=20;
+				p.z=0;
+				bodySetPosition(phys[i].obj, p);
+				p.x=0;
+				p.y=0;
+				p.z=0;
+				bodySetLinearVelocity(phys[i].obj, p);
+			}
+			
+			
 			bodyGetOpenGLMatrix(phys[i].obj, (float*)&mod);
 
-            kmMat4Assign(&mvp, &vp);
-            kmMat4Multiply(&mvp, &mvp, &mod);
+            kmMat4Multiply(&mvp, &vp, &mod);
+            kmMat4Multiply(&mv, &view, &mod);
 
-            kmMat4Assign(&mv, &view);
-            kmMat4Multiply(&mv, &mv, &mod);
-            //int s = bodyGetShapeType(fallingBodies[i]);
             int s = bodyGetShapeType(phys[i].obj);
+
             if (s==T_BOX) {
                 drawObj(&boxObj, phys[i].sz, 1,&mvp, &mv, lightDir, viewDir);
             }
@@ -240,6 +250,13 @@ int main(void) {
                 drawObj(&drumObj, phys[i].sz, 2,&mvp, &mv, lightDir, viewDir);
 			}
         }
+        
+        // for "static" ground shape
+        Vec ss = { 20.f, 5.f, 20.f, 0.f };
+        kmMat4Translation(&mod, 0.f, -5.f, 0.f);
+		kmMat4Multiply(&mvp, &vp, &mod);
+		kmMat4Multiply(&mv, &view, &mod);      
+		drawObj(&boxObj, ss, 1, &mvp, &mv, lightDir, viewDir);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -251,6 +268,7 @@ int main(void) {
     // just to catch anything missed...
     glCheckError(__FILE__,__LINE__);
 
+	destroyUniverse(uni);
 
     glfwDestroyWindow(window);
 

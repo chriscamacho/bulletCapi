@@ -20,11 +20,11 @@ void main() {
 	float rDOTv = max(0.1, dot(reflect,u_viewDir));
 	
 // these three vec4's could be material uniforms.	
-	vec4 ambi = vec4(.2,.2,.2,0) * baseColour;	
-	vec4 diffu = vec4(.6,.6,.6,0) * nDOTl * baseColour;;
+	vec4 ambi = vec4(.4,.4,.4,0) * baseColour;	
+	vec4 diffu = vec4(.5,.5,.5,0) * nDOTl * baseColour;;
 		
 // spec strength (could be a material uniform)	
-    vec4 specu = vec4(.4,.4,.4,0) * pow(rDOTv, 20.0);
+    vec4 specu = vec4(.4,.4,.4,0) * pow(rDOTv, 8.0);
 
 	//gl_FragColor = (ambi + diffu + specu);
 	frag_color = ambi + diffu + specu;

@@ -132,6 +132,12 @@ void bodyGetPosition(void* body, Vec* pos ) {
 	pos->z = trans.getOrigin().getZ();
 }
 
+void bodySetPosition(void* body, Vec pos ) {
+	btTransform trans;
+	trans.setOrigin(btVector3(pos.x,pos.y,pos.z));
+	BODY(body)->setWorldTransform(trans);
+}
+
 void bodyGetOrientation(void* body, Vec* r) {
 	btTransform trans;
 	if (BODY(body) && BODY(body)->getMotionState())	{
@@ -191,6 +197,10 @@ void bodyGetLinearVelocity(void* body, Vec* v) {
 	v->x = bv.getX();
 	v->y = bv.getY();
 	v->z = bv.getZ();
+}
+
+void bodySetLinearVelocity(void* body, Vec v) {
+	BODY(body)->setLinearVelocity(btVector3(v.x,v.y,v.z));
 }
 
 void bodyGetAngularVelocity(void* body, Vec* v) {
