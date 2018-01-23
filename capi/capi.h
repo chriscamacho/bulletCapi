@@ -14,7 +14,7 @@ enum ShapeType { T_SPHERE = 8, T_BOX=0, T_CYLINDER=13 };
 void* createUniverse();
 void destroyUniverse(void* uni); /// muhahahaha
 void setGravity(void* uni, float x, float y, float z);
-void* stepWorld(void* u, float dt, int i);
+void stepWorld(void* u, float dt, int i);
 void collisionCallback(void* u, void(*callback)(void*, void*, const Vec*, const Vec*, const Vec*) );
 ///								void contact(void* b1, void* b2, const Vec* ptA, const Vec* ptB, const Vec* norm)
 
@@ -34,7 +34,7 @@ void bodyGetLinearVelocity(void* body, Vec* v);
 void bodyGetAngularVelocity(void* body, Vec* v);
 void bodySetRotation(void* body, float yaw, float pitch, float roll);
 void bodySetRestitution(void* body, float r);
-void* bodySetFriction(void* s, float f);
+void bodySetFriction(void* s, float f);
 float bodyGetFriction(void* s);
 
 int bodyGetShapeType(void* body);

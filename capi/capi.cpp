@@ -14,9 +14,9 @@ void* createUniverse() {
 	// only used for clean up for now...
 	u->collisionShapes =  new btAlignedObjectArray<btCollisionShape*>();
 	
-	float a;
-	btScalar b;
-	printf("sizeof float %i sizeof btScalar %i\n", sizeof(a),sizeof(b));
+	//float a;
+	//btScalar b;
+	//printf("sizeof float %i sizeof btScalar %i\n", sizeof(a),sizeof(b));
 
 	return (void*)u;
 }
@@ -97,7 +97,7 @@ void* createBody(void* u, void* shape, float mass, float x, float y, float z) {
 	return body;
 }
 
-void* stepWorld(void* u, float dt, int i) {
+void stepWorld(void* u, float dt, int i) {
 	UNI(u)->dynamicsWorld->stepSimulation(dt, i);
 }
 
@@ -200,7 +200,7 @@ void bodyGetAngularVelocity(void* body, Vec* v) {
 	v->z = bv.getZ();
 }
 
-void* bodySetFriction(void* s, float f) {
+void bodySetFriction(void* s, float f) {
 	BODY(s)->setFriction(f);
 }
 
@@ -226,7 +226,7 @@ void collisionCallback(void* u, void (*callback)(void*, void*, const Vec*, const
                 const btVector3& normalOnB = pt.m_normalWorldOnB;
                 
                 const Vec pa={ptA.getX(),ptA.getY(),ptA.getZ()};
-                const Vec pb={ptA.getX(),ptA.getY(),ptA.getZ()};
+                const Vec pb={ptB.getX(),ptB.getY(),ptB.getZ()};
                 const Vec n={normalOnB.getX(),normalOnB.getY(),normalOnB.getZ()};
                 callback((void*)obA, (void*)obB, &pa, &pb, &n);
             }
