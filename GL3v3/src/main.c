@@ -4,15 +4,18 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "util.h"
 #include "obj.h"
 
 #include <kazmath.h>
 #include <capi.h>
+#include "phys.h"
 
 void* uni;
-void* fallingBodies[30];
+//void* fallingBodies[30];
+phys_t phys[30];
 
 kmVec3 pEye,pCentre,pUp,viewDir;
 kmVec3 lightDir;
@@ -27,6 +30,8 @@ obj_t ballObj, boxObj, drumObj;
 float width = Iwidth;
 float height = Iheight;
 kmVec4 viewPort= {0,0,Iwidth,Iheight};
+
+#define rnd(x) (float)rand()/(float)(RAND_MAX/x);
 
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -64,6 +69,8 @@ int main(void) {
 
     GLFWwindow* window;
 
+    int seed = time(NULL);
+    srand(seed);
 
     glfwSetErrorCallback(error_callback);
 
@@ -155,18 +162,36 @@ int main(void) {
 
     for (int i=0; i<30; i++) {
         void* fs;
+        float sx,sy,sz;
+        
+        sx = 0.5f+rnd(1.0f);
+        sy = 0.5f+rnd(1.0f);
+        sz = 0.5f+rnd(1.0f);
+        
         if (i<5) {
-            fs = createBoxShape(uni, 0.5, 0.5, 0.5);
+            fs = createBoxShape(uni, sx, sy, sz);
         } else {
 			if (i<10) {
-				fs = createSphereShape(uni, 0.5);
+				sy=sx;
+				sz=sx;
+				fs = createSphereShape(uni, sx);
 			} else {
-				fs = createCylinderShape(uni, 0.5, 0.5);
+				sx/=2.0f;
+				sy = sx;
+				fs = createCylinderShape(uni, sx, sz);
 			}
         }
-        fallingBodies[i] = createBody(uni, fs, 1,  0,(i-2)*1.1, 0);
-        bodySetRotation(fallingBodies[i], .7,0,0);
-        bodySetFriction(fallingBodies[i], .8);
+        phys[i].sz.x = sx;
+        phys[i].sz.y = sy;
+        phys[i].sz.z = sz;
+        float px = 5.f-rnd(10.f);
+        float py = 8.f-rnd(5.f);
+        float pz = 5.f-rnd(5.f);
+        phys[i].obj = createBody(uni, fs, 1,  px, py, pz);
+        //fallingBodies[i] = createBody(uni, fs, 1,  0,(i-2)*1.1, 0);
+        
+        bodySetRotation(phys[i].obj, .7,0,0);
+        bodySetFriction(phys[i].obj, .8);
     }
 
     float a;
@@ -195,22 +220,24 @@ int main(void) {
         kmVec3Normalize(&lightDir, &lightDir);
 
         for (int i=0; i<30; i++) {
-            bodyGetOpenGLMatrix(fallingBodies[i], (float*)&mod);
+            //bodyGetOpenGLMatrix(fallingBodies[i], (float*)&mod);
+			bodyGetOpenGLMatrix(phys[i].obj, (float*)&mod);
 
             kmMat4Assign(&mvp, &vp);
             kmMat4Multiply(&mvp, &mvp, &mod);
 
             kmMat4Assign(&mv, &view);
             kmMat4Multiply(&mv, &mv, &mod);
-            int s = bodyGetShapeType(fallingBodies[i]);
+            //int s = bodyGetShapeType(fallingBodies[i]);
+            int s = bodyGetShapeType(phys[i].obj);
             if (s==T_BOX) {
-                drawObj(&boxObj, 1,&mvp, &mv, lightDir, viewDir);
+                drawObj(&boxObj, phys[i].sz, 1,&mvp, &mv, lightDir, viewDir);
             }
             if (s==T_SPHERE) {
-                drawObj(&ballObj, 0,&mvp, &mv, lightDir, viewDir);
+                drawObj(&ballObj, phys[i].sz, 0,&mvp, &mv, lightDir, viewDir);
             }
             if (s==T_CYLINDER) {
-                drawObj(&drumObj, 2,&mvp, &mv, lightDir, viewDir);
+                drawObj(&drumObj, phys[i].sz, 2,&mvp, &mv, lightDir, viewDir);
 			}
         }
 

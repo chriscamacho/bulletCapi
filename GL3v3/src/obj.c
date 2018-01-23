@@ -171,6 +171,8 @@ int createObj(obj_t *obj, int numVerts, float *verts, float *txVert,
     glCheckError(__FILE__,__LINE__);
     obj->viewDir_uniform =
         getShaderLocation(shaderUniform, obj->program, "u_viewDir");
+    obj->sz_uniform =
+        getShaderLocation(shaderUniform, obj->program, "sz_uniform");
     glCheckError(__FILE__,__LINE__);
 
     glEnableVertexAttribArray(obj->vert_attrib);
@@ -227,6 +229,7 @@ int createObjCopyShader(obj_t *obj, int numVerts, float *verts,
     obj->tex_uniform = sdrobj->tex_uniform;
     obj->lightDir_uniform = sdrobj->lightDir_uniform;
     obj->viewDir_uniform =  sdrobj->viewDir_uniform;
+    obj->sz_uniform = sdrobj->sz_uniform;
     obj->program = sdrobj->program;
 
     glEnableVertexAttribArray(obj->vert_attrib);
@@ -247,7 +250,7 @@ int createObjCopyShader(obj_t *obj, int numVerts, float *verts,
     return 0;
 }
 
-void drawObj(obj_t *obj, int texu, kmMat4 * combined, kmMat4 * mv, kmVec3 lightDir, kmVec3 viewDir)
+void drawObj(obj_t *obj, Vec sz, int texu, kmMat4 * combined, kmMat4 * mv, kmVec3 lightDir, kmVec3 viewDir)
 {
     glUseProgram(obj->program);
 
@@ -256,6 +259,7 @@ void drawObj(obj_t *obj, int texu, kmMat4 * combined, kmMat4 * mv, kmVec3 lightD
     glUniformMatrix4fv(obj->mvp_uniform, 1, GL_FALSE, (GLfloat *) combined);
     glUniformMatrix4fv(obj->mv_uniform, 1, GL_FALSE, (GLfloat *) mv);
 	glUniform1i(obj->tex_uniform, texu);
+	glUniform3f(obj->sz_uniform, sz.x, sz.y, sz.z);
     glUniform3f(obj->viewDir_uniform,viewDir.x,viewDir.y,viewDir.z);
     glUniform3f(obj->lightDir_uniform,lightDir.x,lightDir.y,lightDir.z);
     

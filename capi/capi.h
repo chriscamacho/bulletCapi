@@ -1,5 +1,8 @@
 /// note to self, use camel case, because such irrelevancies, upsets reddit
 
+#ifndef CAPI_H
+#define CAPI_H
+
 // Vec has 4 components so it can be used for quaternions too...
 typedef struct {
 	float x,y,z,w;
@@ -9,7 +12,7 @@ typedef struct {
 // box = 0
 // cylinder = 13
 
-enum ShapeType { T_SPHERE = 8, T_BOX=0, T_CYLINDER=13 };
+typedef enum { T_SPHERE = 8, T_BOX=0, T_CYLINDER=13 } ShapeType;
 
 void* createUniverse();
 void destroyUniverse(void* uni); /// muhahahaha
@@ -40,6 +43,12 @@ float bodyGetFriction(void* s);
 int bodyGetShapeType(void* body);
 
 
+
+
+
+
+
+#endif
 
 
 

@@ -6,6 +6,7 @@ in		vec3	norm_attrib;
 
 uniform	mat4	mvp_uniform;
 uniform mat4	mv_uniform;
+uniform vec3	sz_uniform;
 
 out		vec2	v_frag_uv;
 out		vec3	v_Position;
@@ -15,9 +16,9 @@ void main(void) {
 
 
 	v_frag_uv = uv_attrib;
-
-    v_Position = vec3(mv_uniform * vec4(vertex_attrib,0));
+	vec3 vp = sz_uniform * vertex_attrib;
+    v_Position = vec3(mv_uniform * vec4(vp,0)) ;
     v_Normal = vec3(mv_uniform * vec4(norm_attrib, 0.0));
-    gl_Position = mvp_uniform * vec4(vertex_attrib,1);
+    gl_Position = mvp_uniform * vec4(vp,1);
 
 }
