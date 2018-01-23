@@ -71,7 +71,7 @@ void* createSphereShape(void* u, float re) {
 }
 
 void* createCylinderShape(void* u,  float x, float y) {
-	btCollisionShape* shape = new btCylinderShapeZ(btVector3(x,0,y));
+	btCollisionShape* shape = new btCylinderShapeZ(btVector3(x,x,y));
 	UNI(u)->collisionShapes->push_back(shape);
 	return (void*)shape;	
 }

@@ -1,0 +1,59 @@
+{
+   ignore video driver
+   Memcheck:Addr8
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}
+
+{
+   ignore video driver
+   Memcheck:Addr4
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}
+
+{
+   ignore video driver
+   Memcheck:Addr1
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}
+
+{
+   ignore video driver
+   Memcheck:Addr8
+   fun:memmove
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}
+
+{
+   ignore video driver
+   Memcheck:Addr8
+   fun:bcmp
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}
+
+{
+   ignore video driver
+   Memcheck:Addr4
+   fun:memmove
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}
+
+{
+   ignore video driver
+   Memcheck:Addr2
+   fun:memmove
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}
+
+{
+   ignore video driver
+   Memcheck:Addr1
+   fun:bcmp
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}
+
+{
+   ignore video driver
+   Memcheck:Addr1
+   fun:memmove
+   obj:/usr/lib/xorg/modules/drivers/i965_dri.so
+}

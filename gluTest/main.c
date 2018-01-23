@@ -30,6 +30,7 @@ void keyOperations (void) {
 
 void display (void) {
 
+
     keyOperations();
     
     stepWorld(uni, 1./60., 8);
