@@ -1,5 +1,5 @@
 
-CFLAGS=-Ofast -c -Iinclude -I../../kazmath/kazmath/ -Wall
+CFLAGS=-Ofast --fast-math -c -Iinclude -I../../kazmath/kazmath/ -Wall
 CFLAGS+= -I../capi/ -I../../bullet3/src/
 LDFLAGS=-lGL -lm -lglfw ../capi/lib/libbullet.a
 

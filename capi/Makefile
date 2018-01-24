@@ -1,5 +1,5 @@
 
-FLAGS=-c -g -I$(BULL) 
+FLAGS=-Ofast -c -I$(BULL) --fast-math
 #-Wfatal-errors
 
 LIB=lib/libbullet.a
