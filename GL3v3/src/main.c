@@ -143,8 +143,7 @@ int main(void) {
     kmMat4PerspectiveProjection(&projection, 45,
                                 (float)width / (float)height, 0.1, 1000);
 
-    kmMat4Assign(&vp, &projection);
-    kmMat4Multiply(&vp, &vp, &view);
+	kmMat4Multiply(&vp, &projection, &view);
 
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
@@ -157,6 +156,8 @@ int main(void) {
     void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 100,100,5
     void* groundBody = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
     bodySetRestitution(groundBody, .9);
+    #define SLOPE 1.f
+    bodySetRotation(groundBody, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 
     for (int i=0; i<NumObj; i++) {
         void* fs;
@@ -186,13 +187,13 @@ int main(void) {
         float px = 10.f-rnd(20.f);
         float py = 30.f-rnd(8.f);
         float pz = 10.f-rnd(20.f);
-        phys[i].obj = createBody(uni, fs, 1,  px, py, pz);
+        phys[i].obj = createBody(uni, fs, sx*sy*sz,  px, py, pz);
         
 //        bodySetRotation(phys[i].obj, .7,0,0);
-        bodySetFriction(phys[i].obj, .4);
+        bodySetFriction(phys[i].obj, .2);
     }
 
-    float a;
+    float a=0;
     glCheckError(__FILE__,__LINE__);
     while (!glfwWindowShouldClose(window)) {
         // draw the whole window black
@@ -254,6 +255,9 @@ int main(void) {
         // for "static" ground shape
         Vec ss = { 20.f, 5.f, 20.f, 0.f };
         kmMat4Translation(&mod, 0.f, -5.f, 0.f);
+        kmMat4 r;
+        kmMat4RotationYawPitchRoll(&r, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
+		kmMat4Multiply(&mod, &r, &mod);
 		kmMat4Multiply(&mvp, &vp, &mod);
 		kmMat4Multiply(&mv, &view, &mod);      
 		drawObj(&boxObj, ss, 1, &mvp, &mv, lightDir, viewDir);

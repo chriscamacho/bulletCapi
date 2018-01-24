@@ -175,7 +175,7 @@ void bodyApplyTorque(void* body, Vec* t) {
 	BODY(body)->applyTorque(btVector3(t->x,t->y,t->z));
 }
 
-void bodySetRotation(void* body, float yaw, float pitch, float roll) {
+void bodySetRotation(void* body, float pitch, float yaw, float roll) {
 	btQuaternion q = btQuaternion();
 	q.setEuler(btScalar(yaw),btScalar(pitch),btScalar(roll));
 	
