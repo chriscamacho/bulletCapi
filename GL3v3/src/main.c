@@ -153,10 +153,11 @@ int main(void) {
     uni = createUniverse();
     setGravity(uni, 0,-9.98,0);
 
-    void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 100,100,5
+    void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 20, 5, 20
     void* groundBody = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
     bodySetRestitution(groundBody, 1.f);
-    #define SLOPE 7.f
+	bodySetFriction(groundBody, 1.f);
+    #define SLOPE 8.f
     bodySetRotationEular(groundBody, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 
     for (int i=0; i<NumObj; i++) {
@@ -190,7 +191,8 @@ int main(void) {
         phys[i].obj = createBody(uni, fs, (.5f+sx)*(.5f+sy)*(.5f+sz),  px, py, pz);
         
         bodySetRotationEular(phys[i].obj, rnd(6.28318530718), rnd(6.28318530718), rnd(6.28318530718));
-        bodySetFriction(phys[i].obj, .6);
+        bodySetFriction(phys[i].obj, .4);
+        bodySetRestitution(phys[i].obj, .6f);
     }
 
     float a=0;
