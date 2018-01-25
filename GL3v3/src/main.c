@@ -33,7 +33,7 @@ float width = Iwidth;
 float height = Iheight;
 kmVec4 viewPort= {0,0,Iwidth,Iheight};
 
-#define rnd(x) (float)rand()/(float)(RAND_MAX/x);
+#define rnd(x) (float)rand()/(float)(RAND_MAX/x)
 
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
@@ -127,7 +127,7 @@ int main(void) {
 
     pEye.x = 0;
     pEye.y = 12;
-    pEye.z = 30;
+    pEye.z = 50;
     pCentre.x = 0;
     pCentre.y = 0;
     pCentre.z = 0;
@@ -155,9 +155,9 @@ int main(void) {
 
     void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 100,100,5
     void* groundBody = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
-    bodySetRestitution(groundBody, .9);
-    #define SLOPE 1.f
-    bodySetRotation(groundBody, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
+    bodySetRestitution(groundBody, 1.f);
+    #define SLOPE 7.f
+    bodySetRotationEular(groundBody, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 
     for (int i=0; i<NumObj; i++) {
         void* fs;
@@ -187,10 +187,10 @@ int main(void) {
         float px = 10.f-rnd(20.f);
         float py = 30.f-rnd(8.f);
         float pz = 10.f-rnd(20.f);
-        phys[i].obj = createBody(uni, fs, sx*sy*sz,  px, py, pz);
+        phys[i].obj = createBody(uni, fs, (.5f+sx)*(.5f+sy)*(.5f+sz),  px, py, pz);
         
-//        bodySetRotation(phys[i].obj, .7,0,0);
-        bodySetFriction(phys[i].obj, .2);
+        bodySetRotationEular(phys[i].obj, rnd(6.28318530718), rnd(6.28318530718), rnd(6.28318530718));
+        bodySetFriction(phys[i].obj, .6);
     }
 
     float a=0;
@@ -224,13 +224,18 @@ int main(void) {
 			bodyGetPosition(phys[i].obj, &p);
 			if (p.y<-10) {
 				p.x=0;
-				p.y=20;
+				p.y=30;
 				p.z=0;
 				bodySetPosition(phys[i].obj, p);
 				p.x=0;
 				p.y=0;
 				p.z=0;
 				bodySetLinearVelocity(phys[i].obj, p);
+				bodySetAngularVelocity(phys[i].obj, p);
+				p.x = rnd(6.28318530718);
+				p.y = rnd(6.28318530718);
+				p.z = rnd(6.28318530718);
+				bodySetRotation(phys[i].obj, p);
 			}
 			
 			

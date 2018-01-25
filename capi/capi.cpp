@@ -175,7 +175,7 @@ void bodyApplyTorque(void* body, Vec* t) {
 	BODY(body)->applyTorque(btVector3(t->x,t->y,t->z));
 }
 
-void bodySetRotation(void* body, float pitch, float yaw, float roll) {
+void bodySetRotationEular(void* body, float pitch, float yaw, float roll) {
 	btQuaternion q = btQuaternion();
 	q.setEuler(btScalar(yaw),btScalar(pitch),btScalar(roll));
 	
@@ -186,6 +186,10 @@ void bodySetRotation(void* body, float pitch, float yaw, float roll) {
 	
 	BODY(body)->setCenterOfMassTransform(trans);
 	
+}
+
+void bodySetRotation(void* body, Vec r) {
+	bodySetRotationEular(body, r.x, r.y, r.z);
 }
 
 void bodySetRestitution(void* body, float r) {
@@ -208,6 +212,10 @@ void bodyGetAngularVelocity(void* body, Vec* v) {
 	v->x = bv.getX();
 	v->y = bv.getY();
 	v->z = bv.getZ();
+}
+
+void bodySetAngularVelocity(void* body, Vec v) {
+	BODY(body)->setAngularVelocity(btVector3(v.x,v.y,v.z));
 }
 
 void bodySetFriction(void* s, float f) {
