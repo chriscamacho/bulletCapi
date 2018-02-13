@@ -182,5 +182,5 @@ gets the shape type attached to the body
 
 ### Conclusion
 This is very early days, there is lots to do, any contributions 
-especially examples most apreciated, it an example needs some missing
+especially examples most apreciated, if an example needs some missing
 functionallity please do post an issue.
