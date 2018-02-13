@@ -123,11 +123,11 @@ void stepWorld(void* u, float dt, int i) {
 
 void bodyGetPositionAndOrientation(void* body, Vec* pos, Vec* r) {
 	btTransform trans;
-	if (BODY(body) && BODY(body)->getMotionState())	{
-		BODY(body)->getMotionState()->getWorldTransform(trans);
-	} else {
+	//if (BODY(body) && BODY(body)->getMotionState())	{
+	//	BODY(body)->getMotionState()->getWorldTransform(trans);
+	//} else {
 		trans = BODY(body)->getWorldTransform();
-	}
+	//}
 	pos->x = trans.getOrigin().getX();
 	pos->y = trans.getOrigin().getY();
 	pos->z = trans.getOrigin().getZ();	
@@ -142,11 +142,11 @@ void bodyGetPositionAndOrientation(void* body, Vec* pos, Vec* r) {
 
 void bodyGetPosition(void* body, Vec* pos ) {
 	btTransform trans;
-	if (BODY(body) && BODY(body)->getMotionState())	{
-		BODY(body)->getMotionState()->getWorldTransform(trans);
-	} else {
+	//if (BODY(body) && BODY(body)->getMotionState())	{
+	//	BODY(body)->getMotionState()->getWorldTransform(trans);
+	//} else {
 		trans = BODY(body)->getWorldTransform();
-	}
+	//}
 	pos->x = trans.getOrigin().getX();
 	pos->y = trans.getOrigin().getY();
 	pos->z = trans.getOrigin().getZ();
@@ -160,11 +160,11 @@ void bodySetPosition(void* body, Vec pos ) {
 
 void bodyGetOrientation(void* body, Vec* r) {
 	btTransform trans;
-	if (BODY(body) && BODY(body)->getMotionState())	{
-		BODY(body)->getMotionState()->getWorldTransform(trans);
-	} else {
+	//if (BODY(body) && BODY(body)->getMotionState())	{
+	//	BODY(body)->getMotionState()->getWorldTransform(trans);
+	//} else {
 		trans = BODY(body)->getWorldTransform();
-	}
+	//}
 	btQuaternion q = trans.getRotation();
 	
 	r->x = q.getX();
@@ -179,11 +179,16 @@ int bodyGetShapeType(void* body) {
 
 void bodyGetOpenGLMatrix(void* body, float* m) {
 	btTransform trans;
-	if (BODY(body) && BODY(body)->getMotionState())	{
-		BODY(body)->getMotionState()->getWorldTransform(trans);
-	} else {
+	
+	// TODO look into this...
+	// commented only worked for dynamic bodies, getting world trans
+	// direct from body works for both static and dynamic
+	
+//	if (BODY(body) && BODY(body)->getMotionState())	{
+//		BODY(body)->getMotionState()->getWorldTransform(trans);
+//	} else {
 		trans = BODY(body)->getWorldTransform();
-	}
+//	}
 	trans.getOpenGLMatrix(m);
 }
 

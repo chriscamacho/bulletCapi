@@ -14,7 +14,6 @@ CC=gcc
 main: $(OBJ) $(OBJkaz) obj/capi.o
 	g++ obj/capi.o $(OBJ) $(OBJkaz) -o main $(LDFLAGS)
 
-
 $(OBJ): obj/%.o : src/%.c
 	$(CC) -std=c99 $(CFLAGS) -c $< -o $@
 

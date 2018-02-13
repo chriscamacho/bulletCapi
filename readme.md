@@ -75,9 +75,12 @@ This will be removed before long as the "wrapper" is already more fully
 featured that this example.
 
 
+
 ## The API
 is very tiny at the moment but it is grouped into a hopefully easy to
 use set of functions
+NB a yaw, pitch, roll rotation is through the y,x,z axes
+
 
 ### Universe API
 These routines effect the global properties of the simulation and 
@@ -178,7 +181,7 @@ I only wrapped this to check the set friction was working as expected
 
 #### ``int bodyGetShapeType(void* body);``
 gets the shape type attached to the body
-	T_SPHERE, T_BOX, T_CYLINDER
+	T_SPHERE, T_BOX, T_CYLINDER, T_COMPOUND
 
 ### Conclusion
 This is very early days, there is lots to do, any contributions 

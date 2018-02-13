@@ -130,6 +130,9 @@ int main(void) {
     glActiveTexture(GL_TEXTURE2);
     GLuint drumTex = loadPNG("data/barrel.png");
     glBindTexture(GL_TEXTURE_2D, drumTex);
+    glActiveTexture(GL_TEXTURE3);
+    GLuint sunTex = loadPNG("data/sun.png");
+    glBindTexture(GL_TEXTURE_2D, sunTex);
 
     loadObj(&boxObj, "data/box.gbo",
             "data/textured.vert", "data/textured.frag");
@@ -168,13 +171,16 @@ int main(void) {
     setGravity(uni, 0,-9.98,0);
 
     void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 20, 5, 20
-    void* groundBody = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
-    bodySetRestitution(groundBody, 1.f);
-	bodySetFriction(groundBody, 1.f);
+    phys[0].obj = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
     #define SLOPE 8.f
-    bodySetRotationEular(groundBody, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 
-    for (int i=0; i<NumObj; i++) {
+    bodySetRestitution(phys[0].obj, 1.f);
+	bodySetFriction(phys[0].obj, 1.f);
+    bodySetRotationEular(phys[0].obj, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
+
+	phys[0].sz = (Vec){20, 5, 20};
+	
+    for (int i=1; i<NumObj; i++) {
         void* fs;
         float sx,sy,sz;
         
@@ -183,25 +189,27 @@ int main(void) {
         sz = 0.5f+rnd(1.0f);
         
         // 60, 120, 180, 240
-        if (i<60) {
+        if (i<30) {
 			// for lazyness all compounds have exactly 3 shapes
 			fs = createCompoundShape(uni);
-			void* c = createSphereShape(uni, 0.5f);
-			addCompoundChild(fs, c, -1.f, 0, 0, 0,0,0);
-			c = createSphereShape(uni, 0.5f);
-			addCompoundChild(fs, c, 1.f, 0, 0, 0,0,0);
-			c = createBoxShape(uni, 1.f, 0.25f, 0.25f);
-			addCompoundChild(fs, c, 0,0,0, 0,0,0);
+			void* c = createSphereShape(uni, 1.f);
+			addCompoundChild(fs, c, -1.5f, 0, 0, 0,0,0);
+			c = createSphereShape(uni, 1.f);
+			addCompoundChild(fs, c, 1.5f, 0, 0, 0,0,0);
+			// box made long on wrong axis to check local
+			// orientation changes of shape on the compound works
+			c = createBoxShape(uni, 3.f, 0.5f, 0.5f);
+			addCompoundChild(fs, c, 0,1.f,0, 0.01745329252f * 90,0,0);
 		} else {
-			if (i<120) {
+			if (i<105) {
 				fs = createBoxShape(uni, sx, sy, sz);
 			} else {
-				if (i<180) {
+				if (i<150) {
 					sy=sx;
 					sz=sx;
 					fs = createSphereShape(uni, sx);
 				} else {
-					sx/=2.0f;
+					sx /= 2.0f;
 					sy = sx;
 					sz *= 2.0f;
 					fs = createCylinderShape(uni, sx, sz);
@@ -286,32 +294,35 @@ int main(void) {
                 drawObj(&drumObj, phys[i].sz, 2,&mvp, &mv, lightDir, viewDir);
 			}
 			if (s==T_COMPOUND) { // for lazyness all compounds the same
-				Vec sz = {1.f,.25f,.25f,0.f};
-				drawObj(&boxObj, sz , 1, &mvp, &mv, lightDir, viewDir);
-				kmMat4 t;
-				kmMat4Translation(&t, -1.f,0,0);
+
+				Vec sz = { 1.f, 1.f, 1.f };
+				kmMat4 t,t2;
+				
+				kmMat4Translation(&t, -1.5f,0,0);
+				kmMat4Multiply(&mod, &mod, &t);		
+				kmMat4Multiply(&mvp, &vp, &mod);
+				kmMat4Multiply(&mv, &view, &mod);
+				
+				drawObj(&ballObj, sz, 3, &mvp, &mv, lightDir, viewDir);
+				
+				kmMat4Translation(&t, 3.f,0,0);
 				kmMat4Multiply(&mod, &mod, &t);
 				kmMat4Multiply(&mvp, &vp, &mod);
 				kmMat4Multiply(&mv, &view, &mod);
-				sz.x = .5f; sz.y = .5f; sz.z = .5f;
-				drawObj(&ballObj, sz, 0, &mvp, &mv, lightDir, viewDir);
-				kmMat4Translation(&t, 2.f,0,0);
-				kmMat4Multiply(&mod, &mod, &t);
+				drawObj(&ballObj, sz, 3, &mvp, &mv, lightDir, viewDir);	
+				
+				sz = (Vec){3.f,.5f,.5f,0.f};
+				kmMat4Translation(&t, -1.5f,1.f,0);
+				kmMat4RotationY(&t2, 0.01745329252f * 90.f);
+				kmMat4Multiply(&mod, &mod, &t);						
+				kmMat4Multiply(&mod, &mod, &t2);		
+
 				kmMat4Multiply(&mvp, &vp, &mod);
 				kmMat4Multiply(&mv, &view, &mod);
-				drawObj(&ballObj, sz, 0, &mvp, &mv, lightDir, viewDir);			
+
+				drawObj(&boxObj, sz , 3, &mvp, &mv, lightDir, viewDir);
 			}
         }
-        
-        // for "static" ground shape
-        Vec ss = { 20.f, 5.f, 20.f, 0.f };
-        kmMat4Translation(&mod, 0.f, -5.f, 0.f);
-        kmMat4 r;
-        kmMat4RotationYawPitchRoll(&r, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
-		kmMat4Multiply(&mod, &r, &mod);
-		kmMat4Multiply(&mvp, &vp, &mod);
-		kmMat4Multiply(&mv, &view, &mod);      
-		drawObj(&boxObj, ss, 1, &mvp, &mv, lightDir, viewDir);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
