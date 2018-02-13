@@ -126,6 +126,7 @@ creates a new compound shape
 
 #### ``void addCompoundChild(void* compound, void* child, float x, float y, float z,``
 ``						float yaw, float pitch, float roll);``
+
 adds a shape to a compound shape, allowing you to position and rotate it 
 relative to the origin of the compound shape.
 
