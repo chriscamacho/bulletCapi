@@ -17,6 +17,8 @@ typedef struct {
 #define SHAPE(x) ((btCollisionShape*)x)
 #define BODY(x) ((btRigidBody*)x)
 
+
+
 extern "C" {
 	
 	#include "capi.h"

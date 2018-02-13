@@ -64,6 +64,26 @@ void* createBoxShape(void* u, float ex, float ey, float ez) {
 	return (void*)shape;
 }
 
+void* createCompoundShape(void* u) {
+	btCollisionShape* shape = new btCompoundShape();
+	UNI(u)->collisionShapes->push_back(shape);
+	return (void*)shape;
+}
+
+void addCompoundChild(void* compound, void* child, float x, float y, float z,
+						float yaw, float pitch, float roll) {
+	
+	btTransform localTrans;
+	localTrans.setIdentity();
+	localTrans.setOrigin(btVector3(x,y,z));
+	
+	btQuaternion quat;
+	quat.setEuler(yaw, pitch, roll);
+	localTrans.setRotation(quat);
+
+	((btCompoundShape*)compound)->addChildShape(localTrans,SHAPE(child));
+}
+
 void* createSphereShape(void* u, float re) {
 	btCollisionShape* shape = new btSphereShape(re);
 	UNI(u)->collisionShapes->push_back(shape);

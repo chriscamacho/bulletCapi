@@ -15,7 +15,7 @@
 
 void* uni;
 
-#define NumObj 200
+#define NumObj 240
 
 phys_t phys[NumObj];
 
@@ -45,9 +45,17 @@ static void key_callback(GLFWwindow* window, int key, int scancode,
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-
-void windowSizeCallback(GLFWwindow* window, int w, int h) {
-
+void framebufferSizeCallback(GLFWwindow* window, int w, int h)
+{
+	// this will cause some flickering during resize
+	// however it is much quicker that resizing each
+	// frame...
+	glScissor(0,0,width,height);
+	glClearColor(0.f,0.f,0.f,1.f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glfwSwapBuffers(window);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
     width = w;
     height = h;
 
@@ -64,6 +72,11 @@ void windowSizeCallback(GLFWwindow* window, int w, int h) {
 
     viewPort.x = (width - viewPort.z) / 2;
     viewPort.y = (height - viewPort.w) / 2;
+}
+
+
+void windowSizeCallback(GLFWwindow* window, int w, int h) {
+
 
 }
 
@@ -91,7 +104,8 @@ int main(void) {
     }
 
     glfwSetKeyCallback(window, key_callback);
-    glfwSetWindowSizeCallback(window, windowSizeCallback);
+//    glfwSetWindowSizeCallback(window, windowSizeCallback);
+	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     glfwMakeContextCurrent(window);
 
@@ -168,20 +182,32 @@ int main(void) {
         sy = 0.5f+rnd(1.0f);
         sz = 0.5f+rnd(1.0f);
         
-        if (i<NumObj*.2f) {
-            fs = createBoxShape(uni, sx, sy, sz);
-        } else {
-			if (i<NumObj*.4f) {
-				sy=sx;
-				sz=sx;
-				fs = createSphereShape(uni, sx);
+        // 60, 120, 180, 240
+        if (i<60) {
+			// for lazyness all compounds have exactly 3 shapes
+			fs = createCompoundShape(uni);
+			void* c = createSphereShape(uni, 0.5f);
+			addCompoundChild(fs, c, -1.f, 0, 0, 0,0,0);
+			c = createSphereShape(uni, 0.5f);
+			addCompoundChild(fs, c, 1.f, 0, 0, 0,0,0);
+			c = createBoxShape(uni, 1.f, 0.25f, 0.25f);
+			addCompoundChild(fs, c, 0,0,0, 0,0,0);
+		} else {
+			if (i<120) {
+				fs = createBoxShape(uni, sx, sy, sz);
 			} else {
-				sx/=2.0f;
-				sy = sx;
-				sz*=2.0f;
-				fs = createCylinderShape(uni, sx, sz);
+				if (i<180) {
+					sy=sx;
+					sz=sx;
+					fs = createSphereShape(uni, sx);
+				} else {
+					sx/=2.0f;
+					sy = sx;
+					sz *= 2.0f;
+					fs = createCylinderShape(uni, sx, sz);
+				}
 			}
-        }
+		}
         phys[i].sz.x = sx;
         phys[i].sz.y = sy;
         phys[i].sz.z = sz;
@@ -199,13 +225,15 @@ int main(void) {
     glCheckError(__FILE__,__LINE__);
     while (!glfwWindowShouldClose(window)) {
         // draw the whole window black
+/*
         glScissor(0,0,width,height);
         glClearColor(0.f,0.f,0.f,1.f);
         glClear(GL_COLOR_BUFFER_BIT);
-
+*/
         // then clear the area representing 16:9 area
         glViewport(viewPort.x, viewPort.y, viewPort.z, viewPort.w);
         glScissor(viewPort.x, viewPort.y, viewPort.z, viewPort.w);
+
         glClearColor(0.25f,0.5f,1.f,1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -256,6 +284,22 @@ int main(void) {
             }
             if (s==T_CYLINDER) {
                 drawObj(&drumObj, phys[i].sz, 2,&mvp, &mv, lightDir, viewDir);
+			}
+			if (s==T_COMPOUND) { // for lazyness all compounds the same
+				Vec sz = {1.f,.25f,.25f,0.f};
+				drawObj(&boxObj, sz , 1, &mvp, &mv, lightDir, viewDir);
+				kmMat4 t;
+				kmMat4Translation(&t, -1.f,0,0);
+				kmMat4Multiply(&mod, &mod, &t);
+				kmMat4Multiply(&mvp, &vp, &mod);
+				kmMat4Multiply(&mv, &view, &mod);
+				sz.x = .5f; sz.y = .5f; sz.z = .5f;
+				drawObj(&ballObj, sz, 0, &mvp, &mv, lightDir, viewDir);
+				kmMat4Translation(&t, 2.f,0,0);
+				kmMat4Multiply(&mod, &mod, &t);
+				kmMat4Multiply(&mvp, &vp, &mod);
+				kmMat4Multiply(&mv, &view, &mod);
+				drawObj(&ballObj, sz, 0, &mvp, &mv, lightDir, viewDir);			
 			}
         }
         

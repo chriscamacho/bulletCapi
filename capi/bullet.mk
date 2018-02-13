@@ -14,7 +14,8 @@ CollisionShapesSRC=$(BULL)BulletCollision/CollisionShapes/btConcaveShape.cpp \
 		$(BULL)BulletCollision/CollisionShapes/btConvexShape.cpp \
 		$(BULL)BulletCollision/CollisionShapes/btConvexInternalShape.cpp \
 		$(BULL)BulletCollision/CollisionShapes/btBoxShape.cpp \
-		$(BULL)BulletCollision/CollisionShapes/btCylinderShape.cpp
+		$(BULL)BulletCollision/CollisionShapes/btCylinderShape.cpp \
+		$(BULL)BulletCollision/CollisionShapes/btCompoundShape.cpp
 		
 CollisionDispatchSRC=$(BULL)BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.cpp \
 		$(BULL)BulletCollision/CollisionDispatch/btCollisionDispatcher.cpp \
