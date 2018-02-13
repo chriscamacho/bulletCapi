@@ -56,6 +56,13 @@ pleasing demonstration
 external to this folder gluTest links in libbullet.a and compiles
 capi.cpp and links that to main.o the C frontend of this example.
 
+### GL3v3
+while a better (though probably not ideal) example of producing 3d graphics
+this does add a bunch of extra clutter (theres way more OpenGL and support
+stuff than actual bullet use!) This example is where new features are introduced
+you will need to adjust the makefile for its dependancy (https://github.com/Kazade/kazmath)
+if you clone it to a location alongside bulletCapi you should be good to go
+
 
 ### cppHello
 This is a simple cpp reference example, building this with libraries
@@ -64,6 +71,9 @@ memory corruption (hence I decided to implement bullet.mk...) it was
 initially used to provide a reference design that I used to begin 
 writing capi.cpp and capi.hpp which constitutes the C++ layer between
 the C front end and the C++ backend
+This will be removed before long as the "wrapper" is already more fully
+featured that this example.
+
 
 ## The API
 is very tiny at the moment but it is grouped into a hopefully easy to
@@ -111,6 +121,13 @@ here re specifies the radial extent of the sphere.
 #### ``void* createCylinderShape(void* u,  float x, float y);``
 cylinder shape x is radius, y is length
 
+#### ``void* createCompoundShape(void* u);``
+creates a new compound shape
+
+#### ``void addCompoundChild(void* compound, void* child, float x, float y, float z,
+						float yaw, float pitch, float roll);``
+adds a shape to a compound shape, allowing you to position and rotate it 
+relative to the origin of the compound shape.
 
 ### The body API
 These function are used to create and manipulate physics bodies
