@@ -171,28 +171,30 @@ int main(void) {
     setGravity(uni, 0,-9.98,0);
 
 	{
-		void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 20, 5, 20
+		Vec sz = {20, 5, 20};
+		void* groundShape = createBoxShape(uni, sz.x, sz.y, sz.z);	// size 20, 5, 20
 		phys[0].obj = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
-		#define SLOPE 8.f
+		#define SLOPE 4.f
 
 		bodySetRestitution(phys[0].obj, 1.f);
 		bodySetFriction(phys[0].obj, 1.f);
 		bodySetRotationEular(phys[0].obj, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 
-		phys[0].sz = (Vec){20, 5, 20};
+		phys[0].sz = sz;
 	}
 	
+	void* hinge;
 	{
 		Vec sz = {2, .5, 4};
 		void* shp = createBoxShape(uni, sz.x, sz.y, sz.z);
 		phys[1].obj = createBody(uni, shp, 0,  2.2, 8, 0);
 		phys[1].sz = sz;
 		
-		sz = (Vec){2, 7, .5};
+		sz = (Vec){2, 8., .5};
 		shp = createBoxShape(uni, sz.x, sz.y, sz.z);
-		phys[2].obj = createBody(uni, shp, 1,  -2.2, 8, 0);
+		phys[2].obj = createBody(uni, shp, 20,  -2.2, 8, 0);
 		phys[2].sz = sz;
-		
+		bodySetDeactivation(phys[2].obj, false);
 	
 		
 		Vec pivA, rotA, pivB, rotB;
@@ -202,11 +204,16 @@ int main(void) {
 		pivB = (Vec){2.3,0,0};
 		rotB = (Vec){0,1.5707963268,0};
 		
-		void* hinge = createHinge(uni, phys[1].obj, phys[2].obj, pivA, rotA, 
+		hinge = createHinge(uni, phys[1].obj, phys[2].obj, pivA, rotA, 
 									pivB, rotB, false, false);
-		hingeSetLimit(hinge, -4, 4); // > pi == unlimited
+		hingeSetLimit(hinge, -PI / 2.0f , PI / 2.0f); // > pi == unlimited
 		hingeEnableAngularMotor(hinge, true, 
-						-2, 1500);
+						-2, 10000);
+
+
+		setConstraintParam(hinge, C_ERP, 1, -1);
+		setConstraintParam(hinge, C_CFM, 0, -1);
+
 		
 	}
 	
@@ -262,6 +269,10 @@ int main(void) {
 
     float a=0;
     glCheckError(__FILE__,__LINE__);
+    
+    int hingeCount = 0;
+    int hingeDir = -2;
+    
     while (!glfwWindowShouldClose(window)) {
         // draw the whole window black
 /*
@@ -277,6 +288,14 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         stepWorld(uni, 1.f/60.f, 8);
+        
+        hingeCount++;
+        if (hingeCount > 240) {
+			hingeCount = 0;
+			hingeDir = -hingeDir;
+			hingeEnableAngularMotor(hinge, true, 
+						hingeDir, 10000);
+		}
 
         a+=0.01f;
         kmMat4 mod,mvp,mv;

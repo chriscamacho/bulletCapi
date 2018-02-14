@@ -153,6 +153,19 @@ void hingeEnableAngularMotor(void* hinge, bool enableMotor,
 									targetVelocity, maxMotorImpulse);
 }
 
+// TODO can't get any sense from this...
+//float hingeGetAngle(void* hinge) {
+	//return ((btHingeConstraint*)hinge)->getHingeAngle();
+	//return ((btHingeAccumulatedAngleConstraint*)hinge)->getAccumulatedHingeAngle();
+	//btTransform transA = ((btHingeConstraint*)hinge)->getFrameOffsetA();
+	//btTransform transB = ((btHingeConstraint*)hinge)->getFrameOffsetB();
+	//return ((btHingeConstraint*)hinge)->getHingeAngle(transA, transB);
+//}
+
+void setConstraintParam(void* c, int num, float value, int axis) {
+	JOINT(c)->setParam(num, value, axis);
+}
+
 void* createBody(void* u, void* shape, float mass, float x, float y, float z) {
 	// heavily "influenced" from bullet manual hello world console example
 	btTransform trans;
@@ -306,6 +319,14 @@ void bodySetFriction(void* s, float f) {
 
 float bodyGetFriction(void* s) {
 	return BODY(s)->getFriction();
+}
+
+void bodySetDeactivation(void* b, bool v) {
+	if (v) {
+		BODY(b)->forceActivationState(DEACTIVATION_ENABLE);
+	} else {
+		BODY(b)->forceActivationState(DEACTIVATION_DISABLE);
+	}
 }
 
 void collisionCallback(void* u, void (*callback)(void*, void*, const Vec*, const Vec*, const Vec*) ) {

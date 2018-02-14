@@ -5,6 +5,11 @@
 
 #include <stdbool.h>
 
+#define PI 3.14159265359
+
+#define DEACTIVATION_ENABLE 3
+#define DEACTIVATION_DISABLE 4
+
 // Vec has 4 components so it can be used for quaternions too...
 typedef struct {
 	float x,y,z,w;
@@ -80,6 +85,13 @@ typedef enum {
 	T_COMPOUND		=	xCOMPOUND_SHAPE_PROXYTYPE
 } ShapeType;
 
+// See TODO re: BroadphaseNativeTypesCOPY
+typedef enum  {
+	C_ERP=1,		//BT_CONSTRAINT_ERP=1,
+	C_STOP_ERP,		//BT_CONSTRAINT_STOP_ERP,
+	C_CFM,			//BT_CONSTRAINT_CFM,
+	C_STOP_CFM		//BT_CONSTRAINT_STOP_CFM
+} ConstraintParams;
 
 void* createUniverse();
 void destroyUniverse(void* uni); /// muhahahaha
@@ -116,6 +128,8 @@ float bodyGetFriction(void* s);
 void bodySetPosition(void* body, Vec pos );
 
 int bodyGetShapeType(void* body);
+void bodySetDeactivation(void* b, bool v);
+
 
 /* TODO started adding this thinking it was a normal hinge
  * needs a few extra support functions for editing properties
@@ -134,7 +148,8 @@ void hingeSetLimit(void* hinge, float low, float hi);
 void hingeEnableAngularMotor(void* hinge, bool enableMotor, float targetVelocity,
 								float maxMotorImpulse);
 
-
+//float hingeGetAngle(void* hinge);
+void setConstraintParam(void* c, int num, float value, int axis);
 
 #endif
 
