@@ -16,7 +16,7 @@ typedef struct {
 #define UNI(x) ((universe*)x)
 #define SHAPE(x) ((btCollisionShape*)x)
 #define BODY(x) ((btRigidBody*)x)
-
+#define JOINT(x) ((btTypedConstraint*)x)
 
 
 extern "C" {

@@ -64,7 +64,10 @@ DynamicsSRC=$(BULL)BulletDynamics/Dynamics/btRigidBody.cpp \
 ConstraintSolverSRC=$(BULL)BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.cpp \
 		$(BULL)BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.cpp \
 		$(BULL)BulletDynamics/ConstraintSolver/btConeTwistConstraint.cpp \
-		$(BULL)BulletDynamics/ConstraintSolver/btTypedConstraint.cpp
+		$(BULL)BulletDynamics/ConstraintSolver/btTypedConstraint.cpp \
+		$(BULL)BulletDynamics/ConstraintSolver/btHinge2Constraint.cpp \
+		$(BULL)BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.cpp \
+		$(BULL)BulletDynamics/ConstraintSolver/btHingeConstraint.cpp
 
 LinearMathSRC=$(BULL)LinearMath/btConvexHullComputer.cpp \
 		$(BULL)LinearMath/btGeometryUtil.cpp \

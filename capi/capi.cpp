@@ -96,6 +96,63 @@ void* createCylinderShape(void* u,  float x, float y) {
 	return (void*)shape;	
 }
 
+/*
+void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
+								Vec parentAxis, Vec childAxis) {
+
+		btVector3 anc(anchor.x, anchor.y, anchor.z);
+		btVector3 pax(parentAxis.x, parentAxis.y, parentAxis.z);
+		btVector3 cax(childAxis.x, childAxis.y, childAxis.z); 
+
+		btHinge2Constraint* hinge2 = new btHinge2Constraint(
+				*BODY(bodyA), *BODY(bodyB), 
+				anc, pax, cax);
+		UNI(u)->dynamicsWorld->addConstraint(hinge2, true);
+
+		//TODO add to global universe list of constraints for 
+		// iteration / auto freeing on destroy universe
+		
+		return (void*)hinge2;	
+}
+
+void hinge2setLowerLimit(void* h, float l) {
+	((btHinge2Constraint*)h)->setLowerLimit(l);
+}
+void hinge2setUpperLimit(void* h, float l) {
+	((btHinge2Constraint*)h)->setUpperLimit(l);
+}
+*/
+void* createHinge(void* uni, void* bodyA, void* bodyB, 
+					Vec pivA, Vec rotA, 
+					Vec pivB, Vec rotB, bool refA, bool collide) {
+
+	btTransform localA, localB;
+	localA.setIdentity();
+	localB.setIdentity();
+	localA.getBasis().setEulerZYX(rotA.z, rotA.y, rotA.x);
+	localA.setOrigin(btVector3(pivA.x, pivA.y, pivA.z));
+	localB.getBasis().setEulerZYX(rotB.z, rotB.y, rotB.x);
+	localB.setOrigin(btVector3(pivB.x, pivB.y, pivB.z));
+	btHingeConstraint* hinge = new btHingeConstraint(
+									*BODY(bodyA), *BODY(bodyB), 
+									localA, localB, refA);
+	UNI(uni)->dynamicsWorld->addConstraint(hinge, collide);
+	// TODO research proper way to dispose of constraints later
+	// possibly add to global constraint list for destroyUniverse			
+	return (void*) hinge;
+
+}
+
+void hingeSetLimit(void* hinge, float low, float hi) {
+	((btHingeConstraint*)hinge)->setLimit(low, hi);
+}
+
+void hingeEnableAngularMotor(void* hinge, bool enableMotor, 
+						float targetVelocity, float maxMotorImpulse) {
+	((btHingeConstraint*)hinge)->enableAngularMotor(enableMotor,
+									targetVelocity, maxMotorImpulse);
+}
+
 void* createBody(void* u, void* shape, float mass, float x, float y, float z) {
 	// heavily "influenced" from bullet manual hello world console example
 	btTransform trans;

@@ -170,17 +170,48 @@ int main(void) {
     uni = createUniverse();
     setGravity(uni, 0,-9.98,0);
 
-    void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 20, 5, 20
-    phys[0].obj = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
-    #define SLOPE 8.f
+	{
+		void* groundShape = createBoxShape(uni, 20, 5, 20);	// size 20, 5, 20
+		phys[0].obj = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
+		#define SLOPE 8.f
 
-    bodySetRestitution(phys[0].obj, 1.f);
-	bodySetFriction(phys[0].obj, 1.f);
-    bodySetRotationEular(phys[0].obj, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
+		bodySetRestitution(phys[0].obj, 1.f);
+		bodySetFriction(phys[0].obj, 1.f);
+		bodySetRotationEular(phys[0].obj, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 
-	phys[0].sz = (Vec){20, 5, 20};
+		phys[0].sz = (Vec){20, 5, 20};
+	}
 	
-    for (int i=1; i<NumObj; i++) {
+	{
+		Vec sz = {2, .5, 4};
+		void* shp = createBoxShape(uni, sz.x, sz.y, sz.z);
+		phys[1].obj = createBody(uni, shp, 0,  2.2, 8, 0);
+		phys[1].sz = sz;
+		
+		sz = (Vec){2, 7, .5};
+		shp = createBoxShape(uni, sz.x, sz.y, sz.z);
+		phys[2].obj = createBody(uni, shp, 1,  -2.2, 8, 0);
+		phys[2].sz = sz;
+		
+	
+		
+		Vec pivA, rotA, pivB, rotB;
+		
+		pivA = (Vec){-2.3,0,0};
+		rotA = (Vec){0,1.5707963268,0};
+		pivB = (Vec){2.3,0,0};
+		rotB = (Vec){0,1.5707963268,0};
+		
+		void* hinge = createHinge(uni, phys[1].obj, phys[2].obj, pivA, rotA, 
+									pivB, rotB, false, false);
+		hingeSetLimit(hinge, -4, 4); // > pi == unlimited
+		hingeEnableAngularMotor(hinge, true, 
+						-2, 1500);
+		
+	}
+	
+	
+    for (int i=3; i<NumObj; i++) {
         void* fs;
         float sx,sy,sz;
         
@@ -260,7 +291,7 @@ int main(void) {
 			
 			Vec p;
 			bodyGetPosition(phys[i].obj, &p);
-			if (p.y<-10) {
+			if (p.y<-10 && i>2) {
 				p.x=0;
 				p.y=30;
 				p.z=0;

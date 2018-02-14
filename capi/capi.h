@@ -3,6 +3,8 @@
 #ifndef CAPI_H
 #define CAPI_H
 
+#include <stdbool.h>
+
 // Vec has 4 components so it can be used for quaternions too...
 typedef struct {
 	float x,y,z,w;
@@ -110,14 +112,27 @@ void bodySetRestitution(void* body, float r);
 void bodySetFriction(void* s, float f);
 float bodyGetFriction(void* s);
 
-// should only be used when you need no "teleport" an object not move it
+// should only be used when you need to "teleport" an object not move it
 void bodySetPosition(void* body, Vec pos );
 
 int bodyGetShapeType(void* body);
 
+/* TODO started adding this thinking it was a normal hinge
+ * needs a few extra support functions for editing properties
+ * seems to be working... 
+ * 
+void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
+								Vec parentAxis, Vec childAxis);
+void hinge2setLowerLimit(void* h, float l);
+void hinge2setUpperLimit(void* h, float l);
+*/
+void* createHinge(void* uni, void* bodyA, void* bodyB, 
+					Vec pivA, Vec rotA, 
+					Vec pivB, Vec rotB, bool refA, bool collide);
 
-
-
+void hingeSetLimit(void* hinge, float low, float hi);
+void hingeEnableAngularMotor(void* hinge, bool enableMotor, float targetVelocity,
+								float maxMotorImpulse);
 
 
 
