@@ -173,12 +173,12 @@ int main(void) {
 	{
 		Vec sz = {20, 5, 20};
 		void* groundShape = createBoxShape(uni, sz.x, sz.y, sz.z);	// size 20, 5, 20
-		phys[0].obj = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
+		phys[0].body = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
 		#define SLOPE 4.f
 
-		bodySetRestitution(phys[0].obj, 1.f);
-		bodySetFriction(phys[0].obj, 1.f);
-		bodySetRotationEular(phys[0].obj, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
+		bodySetRestitution(phys[0].body, 1.f);
+		bodySetFriction(phys[0].body, 1.f);
+		bodySetRotationEular(phys[0].body, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 
 		phys[0].sz = sz;
 	}
@@ -187,14 +187,14 @@ int main(void) {
 	{
 		Vec sz = {2, .5, 4};
 		void* shp = createBoxShape(uni, sz.x, sz.y, sz.z);
-		phys[1].obj = createBody(uni, shp, 0,  2.2, 8, 0);
+		phys[1].body = createBody(uni, shp, 0,  2.2, 8, 0);
 		phys[1].sz = sz;
 		
 		sz = (Vec){2, 8., .5};
 		shp = createBoxShape(uni, sz.x, sz.y, sz.z);
-		phys[2].obj = createBody(uni, shp, 20,  -2.2, 8, 0);
+		phys[2].body = createBody(uni, shp, 20,  -2.2, 8, 0);
 		phys[2].sz = sz;
-		bodySetDeactivation(phys[2].obj, false);
+		bodySetDeactivation(phys[2].body, false);
 	
 		
 		Vec pivA, rotA, pivB, rotB;
@@ -204,7 +204,7 @@ int main(void) {
 		pivB = (Vec){2.3,0,0};
 		rotB = (Vec){0,1.5707963268,0};
 		
-		hinge = createHinge(uni, phys[1].obj, phys[2].obj, pivA, rotA, 
+		hinge = createHinge(uni, phys[1].body, phys[2].body, pivA, rotA, 
 									pivB, rotB, false, false);
 		hingeSetLimit(hinge, -PI / 2.0f , PI / 2.0f); // > pi == unlimited
 		hingeEnableAngularMotor(hinge, true, 
@@ -260,11 +260,11 @@ int main(void) {
         float px = 10.f-rnd(20.f);
         float py = 30.f-rnd(8.f);
         float pz = 10.f-rnd(20.f);
-        phys[i].obj = createBody(uni, fs, (.5f+sx)*(.5f+sy)*(.5f+sz),  px, py, pz);
+        phys[i].body = createBody(uni, fs, (.5f+sx)*(.5f+sy)*(.5f+sz),  px, py, pz);
         
-        bodySetRotationEular(phys[i].obj, rnd(6.28318530718), rnd(6.28318530718), rnd(6.28318530718));
-        bodySetFriction(phys[i].obj, .4);
-        bodySetRestitution(phys[i].obj, .6f);
+        bodySetRotationEular(phys[i].body, rnd(6.28318530718), rnd(6.28318530718), rnd(6.28318530718));
+        bodySetFriction(phys[i].body, .4);
+        bodySetRestitution(phys[i].body, .6f);
     }
 
     float a=0;
@@ -309,30 +309,30 @@ int main(void) {
         for (int i=0; i<NumObj; i++) {
 			
 			Vec p;
-			bodyGetPosition(phys[i].obj, &p);
+			bodyGetPosition(phys[i].body, &p);
 			if (p.y<-10 && i>2) {
 				p.x=0;
 				p.y=30;
 				p.z=0;
-				bodySetPosition(phys[i].obj, p);
+				bodySetPosition(phys[i].body, p);
 				p.x=0;
 				p.y=0;
 				p.z=0;
-				bodySetLinearVelocity(phys[i].obj, p);
-				bodySetAngularVelocity(phys[i].obj, p);
+				bodySetLinearVelocity(phys[i].body, p);
+				bodySetAngularVelocity(phys[i].body, p);
 				p.x = rnd(6.28318530718);
 				p.y = rnd(6.28318530718);
 				p.z = rnd(6.28318530718);
-				bodySetRotation(phys[i].obj, p);
+				bodySetRotation(phys[i].body, p);
 			}
 			
 			
-			bodyGetOpenGLMatrix(phys[i].obj, (float*)&mod);
+			bodyGetOpenGLMatrix(phys[i].body, (float*)&mod);
 
             kmMat4Multiply(&mvp, &vp, &mod);
             kmMat4Multiply(&mv, &view, &mod);
 
-            int s = bodyGetShapeType(phys[i].obj);
+            int s = bodyGetShapeType(phys[i].body);
 
             if (s==T_BOX) {
                 drawObj(&boxObj, phys[i].sz, 1,&mvp, &mv, lightDir, viewDir);

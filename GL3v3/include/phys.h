@@ -5,7 +5,6 @@
 typedef struct __phys_t phys_t;
 
 struct __phys_t {
-	Vec			sz;
-	ShapeType	typ;
-	obj_t*		obj;
+	Vec		sz;		// "scale" or size of the bodies shape
+	void*	body;
 };
