@@ -3,6 +3,7 @@
 #include "btBulletDynamicsCommon.h"
 
 // C-api only sees this as a void pointer like bullet class pointers
+/** \cond HIDDEN */
 typedef struct {
 	btDefaultCollisionConfiguration* collisionConfiguration;
 	btCollisionDispatcher* dispatcher;
@@ -11,7 +12,7 @@ typedef struct {
 	btDiscreteDynamicsWorld* dynamicsWorld;
 	btAlignedObjectArray<btCollisionShape*> *collisionShapes;
 } universe;
-
+/** \endcond */
 // to ease casting a void*
 #define UNI(x) ((universe*)x)
 #define SHAPE(x) ((btCollisionShape*)x)

@@ -187,21 +187,21 @@ int main(void) {
 	{
 		Vec sz = {2, .5, 4};
 		void* shp = createBoxShape(uni, sz.x, sz.y, sz.z);
-		phys[1].body = createBody(uni, shp, 0,  2.2, 8, 0);
+		phys[1].body = createBody(uni, shp, 0,  -4.2, 8, 0);
 		phys[1].sz = sz;
 		
-		sz = (Vec){2, 8., .5};
+		sz = (Vec){8, 6, .5};
 		shp = createBoxShape(uni, sz.x, sz.y, sz.z);
-		phys[2].body = createBody(uni, shp, 20,  -2.2, 8, 0);
+		phys[2].body = createBody(uni, shp, 40,  0.2, 8, 0);
 		phys[2].sz = sz;
 		bodySetDeactivation(phys[2].body, false);
 	
 		
 		Vec pivA, rotA, pivB, rotB;
 		
-		pivA = (Vec){-2.3,0,0};
+		pivA = (Vec){2.3,0,0};
 		rotA = (Vec){0,1.5707963268,0};
-		pivB = (Vec){2.3,0,0};
+		pivB = (Vec){-8,0,0};
 		rotB = (Vec){0,1.5707963268,0};
 		
 		hinge = createHinge(uni, phys[1].body, phys[2].body, pivA, rotA, 
@@ -228,7 +228,7 @@ int main(void) {
         
         // 60, 120, 180, 240
         if (i<30) {
-			// for lazyness all compounds have exactly 3 shapes
+			// for lazyness all compounds are identical having exactly shapes
 			fs = createCompoundShape(uni);
 			void* c = createSphereShape(uni, 1.f);
 			addCompoundChild(fs, c, -1.5f, 0, 0, 0,0,0);
@@ -271,7 +271,7 @@ int main(void) {
     glCheckError(__FILE__,__LINE__);
     
     int hingeCount = 0;
-    int hingeDir = -2;
+    int hingeDir = -1;
     
     while (!glfwWindowShouldClose(window)) {
         // draw the whole window black

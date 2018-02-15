@@ -77,111 +77,11 @@ featured that this example.
 
 
 ## The API
-is very tiny at the moment but it is grouped into a hopefully easy to
-use set of functions
-NB a yaw, pitch, roll rotation is through the y,x,z axes
+
+please see the doxygen docs
 
 
-### Universe API
-These routines effect the global properties of the simulation and 
-provide a pointer that a lot of other functions require
 
-#### ``void *createUniverse();``
-Sets up the simulation environment and returns a pointer to that
-environment
-
-#### ``void destroyUniverse(void* uni); /// muhahahaha``
-Don't use if 007 is around, basically frees all resources (including
-bodies and shapes) and all other resources used by the simulation.
-
-#### ``void setGravity(void* uni, float x, float y, float z);``
-You're not forced to have +tive Z or Y as "up" set the global direction
-of gravity to what makes sense for your setup
-
-#### ``void* stepWorld(void* u, float dt, int i);``
-This "steps" the simulation dt is a decimal fraction of a second and
-i is the number of iterations to use
-
-#### ``void collisionCallback(void* u, void(*callback)(void*, void*, const Vec*, const Vec*, const Vec*) );``
-call a callback function for each object pair that has collided this step
-
-##### ``void contact(void* b1, void* b2, const Vec* ptA, const Vec* ptB, const Vec* norm)``
-the prototype for the callback function b1 & b2 are pointers to the two bodies that collided, ptA & ptB are the
-locations of the collisions, norm is the collision normal with reference
-to the second body (b2 or B) 
-
-
-### The shape API
-more later! for now these basic shapes are enough for testing and basic
-demostration
-
-#### ``void* createBoxShape(void* uni, float ex, float ey, float ez);``
-pass the "universe" pointer ex,ey & ez define the extent of the box
-
-#### ``void* createSphereShape(void* u, float re);``
-here re specifies the radial extent of the sphere.
-
-#### ``void* createCylinderShape(void* u,  float x, float y);``
-cylinder shape x is radius, y is length
-
-#### ``void* createCompoundShape(void* u);``
-creates a new compound shape
-
-#### ``void addCompoundChild(void* compound, void* child, float x, float y, float z, float yaw, float pitch, float roll);``
-
-adds a shape to a compound shape, allowing you to position and rotate it 
-relative to the origin of the compound shape.
-
-### The body API
-These function are used to create and manipulate physics bodies
-
-#### ``void* createBody(void* u, void* shape, float mass, float x, float y, float z);``
-creates a body using the specified shape, a zero mass represents a 
-static body.  X, Y & Z define the start position
-
-#### ``void bodyGetPosition(void* body, Vec* pos );``
-provide a pointer to the body and a Vec structure, the Vec is set with
-the position of the body
-
-#### ``void bodyGetOrientation(void* body, Vec* r);``
-fills in r with a quaternion representing the body orientation
-
-#### ``void bodyGetPositionAndOrientation(void* body, Vec* pos, Vec* r);``
-get both the position and orientation
-
-#### ``void bodyGetOpenGLMatrix(void* body, float* m);``
-get the position and orientation represented by a 16 float array 
-suitable for use as an OpenGL Matrix
-
-#### ``void bodySetRotation(void* body, float yaw, float pitch, float roll);``
-intended only to be used to set an initial rotation of a body, y,p & r are in
-radians 0-2pi
-
-#### ``void bodyApplyTorque(void* body, Vec* t);``
-adds rotational force (torque) to the body
-
-#### ``void bodyApplyImpulse(void* body, Vec* i, Vec* p);``
-apply an impulse or push i vector, from the bodies position p
-
-#### ``void bodyGetLinearVelocity(void* body, Vec* v);``
-get a vector representing the linear velocity of a body
-
-#### ``void bodyGetAngularVelocity(void* body, Vec* v);``
-gets the angular or rotational velocity
-
-#### ``void bodySetRestitution(void* body, float r);``
-set the restitution (bounciness) of a body
-
-#### ``void* bodySetFriction(void* s, float f);``
-set the friction for the body
-
-#### ``float bodyGetFriction(void* s);``
-I only wrapped this to check the set friction was working as expected
-(hard to tell from a console application!) probably of limited use
-
-#### ``int bodyGetShapeType(void* body);``
-gets the shape type attached to the body
-	T_SPHERE, T_BOX, T_CYLINDER, T_COMPOUND
 
 ### Conclusion
 This is very early days, there is lots to do, any contributions 

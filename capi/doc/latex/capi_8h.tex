@@ -1,0 +1,635 @@
+\hypertarget{capi_8h}{}\section{capi.\+h File Reference}
+\label{capi_8h}\index{capi.\+h@{capi.\+h}}
+
+
+a C wrapper for the bullet physics engine  
+
+
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structVec}{Vec}}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{capi_8h_a0025743cf4d256fe0e51296786b1e512}{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+E\+N\+A\+B\+LE}}~3
+\item 
+\#define \mbox{\hyperlink{capi_8h_a95bef1245d58aa0159f776cab846680f}{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+D\+I\+S\+A\+B\+LE}}~4
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \mbox{\hyperlink{capi_8h_a5a4538eeab397888d88a4eefcc5a1345}{Shape\+Type}} 
+\item 
+enum \mbox{\hyperlink{capi_8h_a3df0933f5b096404c2f1d8b3d7c83198}{Constraint\+Params}} 
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \mbox{\hyperlink{capi_8h_ad66b55c68d7a9a2a73dab869c520451c}{create\+Universe}} ()
+\item 
+void \mbox{\hyperlink{capi_8h_a2226965b7bb6644f0a2b601bb103f57d}{destroy\+Universe}} (void $\ast$uni)
+\item 
+void \mbox{\hyperlink{capi_8h_a6003cacda9340216eeb49067b6d8808d}{set\+Gravity}} (void $\ast$uni, float x, float y, float z)
+\begin{DoxyCompactList}\small\item\em muhahahaha \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{capi_8h_a470bfe1b792ff9ea4ad43413b315bda7}{step\+World}} (void $\ast$u, float dt, int i)
+\item 
+void \mbox{\hyperlink{capi_8h_a3fadee39316f37ad415628eaa6de48bd}{collision\+Callback}} (void $\ast$u, void($\ast$callback)(void $\ast$, void $\ast$, const \mbox{\hyperlink{structVec}{Vec}} $\ast$, const \mbox{\hyperlink{structVec}{Vec}} $\ast$, const \mbox{\hyperlink{structVec}{Vec}} $\ast$))
+\item 
+void $\ast$ \mbox{\hyperlink{capi_8h_a302fd9188e5f7ec2f1478adbc2723460}{create\+Box\+Shape}} (void $\ast$uni, float ex, float ey, float ez)
+\item 
+void $\ast$ \mbox{\hyperlink{capi_8h_a831c9c64284c9587820bc6c948b7328d}{create\+Sphere\+Shape}} (void $\ast$u, float re)
+\item 
+void $\ast$ \mbox{\hyperlink{capi_8h_a2edb62e2ee97d3b2e929f05f0a4296fc}{create\+Cylinder\+Shape}} (void $\ast$u, float x, float y)
+\item 
+void $\ast$ \mbox{\hyperlink{capi_8h_aaf33f25c6b06c812f3c8e7e24792a658}{create\+Compound\+Shape}} (void $\ast$u)
+\item 
+void \mbox{\hyperlink{capi_8h_ac8d0b8d3da879395b266d4ebc91c8b17}{add\+Compound\+Child}} (void $\ast$compound, void $\ast$child, float x, float y, float z, float yaw, float pitch, float roll)
+\item 
+void $\ast$ \mbox{\hyperlink{capi_8h_a8c20b40b740e9e3e158a3f3d9e0382bb}{create\+Body}} (void $\ast$u, void $\ast$shape, float mass, float x, float y, float z)
+\item 
+void \mbox{\hyperlink{capi_8h_a16f2def38f131e871a6b3216f3ffbca5}{body\+Get\+Position}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} $\ast$pos)
+\item 
+void \mbox{\hyperlink{capi_8h_a479ba24227b9d904cbfa83dea95bee6e}{body\+Get\+Orientation}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} $\ast$r)
+\item 
+void \mbox{\hyperlink{capi_8h_a5341eb23d2aec30cb906cba8aef13de6}{body\+Get\+Position\+And\+Orientation}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} $\ast$pos, \mbox{\hyperlink{structVec}{Vec}} $\ast$r)
+\item 
+void \mbox{\hyperlink{capi_8h_a97d48ab1541cf5824890d6cbe10306bc}{body\+Get\+Open\+G\+L\+Matrix}} (void $\ast$body, float $\ast$m)
+\item 
+void \mbox{\hyperlink{capi_8h_a8992b561935682783cf9eb8668ee8088}{body\+Apply\+Impulse}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} $\ast$i, \mbox{\hyperlink{structVec}{Vec}} $\ast$p)
+\item 
+void \mbox{\hyperlink{capi_8h_a2a64d2c84ad3e182ad6a103ec546a43a}{body\+Apply\+Torque}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} $\ast$t)
+\item 
+void \mbox{\hyperlink{capi_8h_a1780084df9bac7d49896f3635b422043}{body\+Get\+Linear\+Velocity}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} $\ast$v)
+\item 
+void \mbox{\hyperlink{capi_8h_a8d67a9e2c22a06dbea2237393d61505e}{body\+Set\+Linear\+Velocity}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} v)
+\item 
+void \mbox{\hyperlink{capi_8h_a145c14111a443f7262592085ac960e4d}{body\+Get\+Angular\+Velocity}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} $\ast$v)
+\item 
+void \mbox{\hyperlink{capi_8h_aad1f0d6f3c8919f0cdb814e963e4f581}{body\+Set\+Angular\+Velocity}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} v)
+\item 
+void \mbox{\hyperlink{capi_8h_aecd465318dca089ea0a6bd1971e612dc}{body\+Set\+Rotation\+Eular}} (void $\ast$body, float pitch, float yaw, float roll)
+\item 
+void \mbox{\hyperlink{capi_8h_a53717d1532f8ea2498751519ab1729fc}{body\+Set\+Rotation}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} r)
+\item 
+void \mbox{\hyperlink{capi_8h_a3a35dfd727669a8d9dc3a943063e7664}{body\+Set\+Restitution}} (void $\ast$body, float r)
+\item 
+void \mbox{\hyperlink{capi_8h_a4300ab56fc0fc972fbdf6c15ab31b65d}{body\+Set\+Friction}} (void $\ast$s, float f)
+\item 
+float \mbox{\hyperlink{capi_8h_ab8625157c1582930fdb1a152c0993b8b}{body\+Get\+Friction}} (void $\ast$s)
+\item 
+void \mbox{\hyperlink{capi_8h_acddf692da50b4a00af73bd6983343264}{body\+Set\+Position}} (void $\ast$body, \mbox{\hyperlink{structVec}{Vec}} pos)
+\item 
+int \mbox{\hyperlink{capi_8h_a96c2db7e2572d2ee88210f1a2e89be7e}{body\+Get\+Shape\+Type}} (void $\ast$body)
+\item 
+void \mbox{\hyperlink{capi_8h_a6fcb09b5998eafa5081ed23f67eebbf8}{body\+Set\+Deactivation}} (void $\ast$b, bool v)
+\item 
+void $\ast$ \mbox{\hyperlink{capi_8h_a3eba63bc25305c0e40f04d9d4921859b}{create\+Hinge}} (void $\ast$uni, void $\ast$bodyA, void $\ast$bodyB, \mbox{\hyperlink{structVec}{Vec}} pivA, \mbox{\hyperlink{structVec}{Vec}} rotA, \mbox{\hyperlink{structVec}{Vec}} pivB, \mbox{\hyperlink{structVec}{Vec}} rotB, bool refA, bool collide)
+\item 
+void \mbox{\hyperlink{capi_8h_a0ac70731dd11a6f45ec9eb86e659aaea}{hinge\+Set\+Limit}} (void $\ast$hinge, float low, float hi)
+\item 
+void \mbox{\hyperlink{capi_8h_a72629030d4c4b058f0b2f95827ae4932}{hinge\+Enable\+Angular\+Motor}} (void $\ast$hinge, bool enable\+Motor, float target\+Velocity, float max\+Motor\+Impulse)
+\item 
+void \mbox{\hyperlink{capi_8h_a88ef89b4805a4cec55abace835451e52}{set\+Constraint\+Param}} (void $\ast$c, int num, float value, int axis)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+a C wrapper for the bullet physics engine 
+
+\begin{DoxyAuthor}{Author}
+Chris Camacho (codifies) 
+
+\href{http://bedroomcoders.co.uk/captcha/}{\tt http\+://bedroomcoders.\+co.\+uk/captcha/} 
+\end{DoxyAuthor}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{capi_8h_a95bef1245d58aa0159f776cab846680f}\label{capi_8h_a95bef1245d58aa0159f776cab846680f}} 
+\index{capi.\+h@{capi.\+h}!D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+D\+I\+S\+A\+B\+LE@{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+D\+I\+S\+A\+B\+LE}}
+\index{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+D\+I\+S\+A\+B\+LE@{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+D\+I\+S\+A\+B\+LE}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+D\+I\+S\+A\+B\+LE}{DEACTIVATION\_DISABLE}}
+{\footnotesize\ttfamily \#define D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+D\+I\+S\+A\+B\+LE~4}
+
+D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+D\+I\+S\+A\+B\+LE disable deactivation used with body\+Set\+Deactivation \mbox{\Hypertarget{capi_8h_a0025743cf4d256fe0e51296786b1e512}\label{capi_8h_a0025743cf4d256fe0e51296786b1e512}} 
+\index{capi.\+h@{capi.\+h}!D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+E\+N\+A\+B\+LE@{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+E\+N\+A\+B\+LE}}
+\index{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+E\+N\+A\+B\+LE@{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+E\+N\+A\+B\+LE}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+E\+N\+A\+B\+LE}{DEACTIVATION\_ENABLE}}
+{\footnotesize\ttfamily \#define D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+E\+N\+A\+B\+LE~3}
+
+D\+E\+A\+C\+T\+I\+V\+A\+T\+I\+O\+N\+\_\+\+E\+N\+A\+B\+LE enable deactivation used with body\+Set\+Deactivation 
+
+\subsection{Enumeration Type Documentation}
+\mbox{\Hypertarget{capi_8h_a3df0933f5b096404c2f1d8b3d7c83198}\label{capi_8h_a3df0933f5b096404c2f1d8b3d7c83198}} 
+\index{capi.\+h@{capi.\+h}!Constraint\+Params@{Constraint\+Params}}
+\index{Constraint\+Params@{Constraint\+Params}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{Constraint\+Params}{ConstraintParams}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{capi_8h_a3df0933f5b096404c2f1d8b3d7c83198}{Constraint\+Params}}}
+
+values used to set constraint params 
+\begin{DoxyParams}{Parameters}
+{\em C\+\_\+\+E\+RP} & \\
+\hline
+{\em C\+\_\+\+S\+T\+O\+P\+\_\+\+E\+RP} & \\
+\hline
+{\em C\+\_\+\+C\+FM} & \\
+\hline
+{\em C\+\_\+\+S\+T\+O\+P\+\_\+\+C\+FM} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a5a4538eeab397888d88a4eefcc5a1345}\label{capi_8h_a5a4538eeab397888d88a4eefcc5a1345}} 
+\index{capi.\+h@{capi.\+h}!Shape\+Type@{Shape\+Type}}
+\index{Shape\+Type@{Shape\+Type}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{Shape\+Type}{ShapeType}}
+{\footnotesize\ttfamily enum \mbox{\hyperlink{capi_8h_a5a4538eeab397888d88a4eefcc5a1345}{Shape\+Type}}}
+
+types used to distinguish shape types
+
+
+\begin{DoxyParams}{Parameters}
+{\em T\+\_\+\+S\+P\+H\+E\+RE} & sphere type \\
+\hline
+{\em T\+\_\+\+B\+OX} & box type \\
+\hline
+{\em T\+\_\+\+C\+Y\+L\+I\+N\+D\+ER} & cylinder type \\
+\hline
+{\em T\+\_\+\+C\+O\+M\+P\+O\+U\+ND} & compound type \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{capi_8h_ac8d0b8d3da879395b266d4ebc91c8b17}\label{capi_8h_ac8d0b8d3da879395b266d4ebc91c8b17}} 
+\index{capi.\+h@{capi.\+h}!add\+Compound\+Child@{add\+Compound\+Child}}
+\index{add\+Compound\+Child@{add\+Compound\+Child}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{add\+Compound\+Child()}{addCompoundChild()}}
+{\footnotesize\ttfamily void add\+Compound\+Child (\begin{DoxyParamCaption}\item[{void $\ast$}]{compound,  }\item[{void $\ast$}]{child,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{float}]{z,  }\item[{float}]{yaw,  }\item[{float}]{pitch,  }\item[{float}]{roll }\end{DoxyParamCaption})}
+
+adds other primatives to the compound shape 
+\begin{DoxyParams}{Parameters}
+{\em compound} & pointer to the compound shape \\
+\hline
+{\em child} & pointer to the child shape \\
+\hline
+{\em x,y,z} & local position of shape in the compound \\
+\hline
+{\em yaw,pitch,roll} & local rotation in the compound \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a8992b561935682783cf9eb8668ee8088}\label{capi_8h_a8992b561935682783cf9eb8668ee8088}} 
+\index{capi.\+h@{capi.\+h}!body\+Apply\+Impulse@{body\+Apply\+Impulse}}
+\index{body\+Apply\+Impulse@{body\+Apply\+Impulse}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Apply\+Impulse()}{bodyApplyImpulse()}}
+{\footnotesize\ttfamily void body\+Apply\+Impulse (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{i,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{p }\end{DoxyParamCaption})}
+
+apply an impulse to a body 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em i} & impulse vector \\
+\hline
+{\em p} & where on the body to apply the impulse \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a2a64d2c84ad3e182ad6a103ec546a43a}\label{capi_8h_a2a64d2c84ad3e182ad6a103ec546a43a}} 
+\index{capi.\+h@{capi.\+h}!body\+Apply\+Torque@{body\+Apply\+Torque}}
+\index{body\+Apply\+Torque@{body\+Apply\+Torque}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Apply\+Torque()}{bodyApplyTorque()}}
+{\footnotesize\ttfamily void body\+Apply\+Torque (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{t }\end{DoxyParamCaption})}
+
+apply a rotational force to the body 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em t} & torque vector \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a145c14111a443f7262592085ac960e4d}\label{capi_8h_a145c14111a443f7262592085ac960e4d}} 
+\index{capi.\+h@{capi.\+h}!body\+Get\+Angular\+Velocity@{body\+Get\+Angular\+Velocity}}
+\index{body\+Get\+Angular\+Velocity@{body\+Get\+Angular\+Velocity}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Get\+Angular\+Velocity()}{bodyGetAngularVelocity()}}
+{\footnotesize\ttfamily void body\+Get\+Angular\+Velocity (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{v }\end{DoxyParamCaption})}
+
+get the angular velocity 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em v} & the velocity \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_ab8625157c1582930fdb1a152c0993b8b}\label{capi_8h_ab8625157c1582930fdb1a152c0993b8b}} 
+\index{capi.\+h@{capi.\+h}!body\+Get\+Friction@{body\+Get\+Friction}}
+\index{body\+Get\+Friction@{body\+Get\+Friction}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Get\+Friction()}{bodyGetFriction()}}
+{\footnotesize\ttfamily float body\+Get\+Friction (\begin{DoxyParamCaption}\item[{void $\ast$}]{s }\end{DoxyParamCaption})}
+
+get the bodies friction setting 
+\begin{DoxyParams}{Parameters}
+{\em s} & body \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+friction setting 
+\end{DoxyReturn}
+\mbox{\Hypertarget{capi_8h_a1780084df9bac7d49896f3635b422043}\label{capi_8h_a1780084df9bac7d49896f3635b422043}} 
+\index{capi.\+h@{capi.\+h}!body\+Get\+Linear\+Velocity@{body\+Get\+Linear\+Velocity}}
+\index{body\+Get\+Linear\+Velocity@{body\+Get\+Linear\+Velocity}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Get\+Linear\+Velocity()}{bodyGetLinearVelocity()}}
+{\footnotesize\ttfamily void body\+Get\+Linear\+Velocity (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{v }\end{DoxyParamCaption})}
+
+get the linear velocity of a body 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em v} & pointer to a \mbox{\hyperlink{structVec}{Vec}} for the velocity \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a97d48ab1541cf5824890d6cbe10306bc}\label{capi_8h_a97d48ab1541cf5824890d6cbe10306bc}} 
+\index{capi.\+h@{capi.\+h}!body\+Get\+Open\+G\+L\+Matrix@{body\+Get\+Open\+G\+L\+Matrix}}
+\index{body\+Get\+Open\+G\+L\+Matrix@{body\+Get\+Open\+G\+L\+Matrix}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Get\+Open\+G\+L\+Matrix()}{bodyGetOpenGLMatrix()}}
+{\footnotesize\ttfamily void body\+Get\+Open\+G\+L\+Matrix (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{float $\ast$}]{m }\end{DoxyParamCaption})}
+
+get a matrix representing the orientaion and position of a body 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em m} & the pointer to a matrix struct (16 floats) can be directly used by Open\+GL \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a479ba24227b9d904cbfa83dea95bee6e}\label{capi_8h_a479ba24227b9d904cbfa83dea95bee6e}} 
+\index{capi.\+h@{capi.\+h}!body\+Get\+Orientation@{body\+Get\+Orientation}}
+\index{body\+Get\+Orientation@{body\+Get\+Orientation}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Get\+Orientation()}{bodyGetOrientation()}}
+{\footnotesize\ttfamily void body\+Get\+Orientation (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{r }\end{DoxyParamCaption})}
+
+get body orientation 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em r} & rotation returned in this \mbox{\hyperlink{structVec}{Vec}} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a16f2def38f131e871a6b3216f3ffbca5}\label{capi_8h_a16f2def38f131e871a6b3216f3ffbca5}} 
+\index{capi.\+h@{capi.\+h}!body\+Get\+Position@{body\+Get\+Position}}
+\index{body\+Get\+Position@{body\+Get\+Position}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Get\+Position()}{bodyGetPosition()}}
+{\footnotesize\ttfamily void body\+Get\+Position (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{pos }\end{DoxyParamCaption})}
+
+get the bodies position 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em pos} & the supplied structured is filled in with the position \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a5341eb23d2aec30cb906cba8aef13de6}\label{capi_8h_a5341eb23d2aec30cb906cba8aef13de6}} 
+\index{capi.\+h@{capi.\+h}!body\+Get\+Position\+And\+Orientation@{body\+Get\+Position\+And\+Orientation}}
+\index{body\+Get\+Position\+And\+Orientation@{body\+Get\+Position\+And\+Orientation}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Get\+Position\+And\+Orientation()}{bodyGetPositionAndOrientation()}}
+{\footnotesize\ttfamily void body\+Get\+Position\+And\+Orientation (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{pos,  }\item[{\mbox{\hyperlink{structVec}{Vec}} $\ast$}]{r }\end{DoxyParamCaption})}
+
+get the position and orientation of a body 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em pos} & the position \\
+\hline
+{\em r} & the rotation \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a96c2db7e2572d2ee88210f1a2e89be7e}\label{capi_8h_a96c2db7e2572d2ee88210f1a2e89be7e}} 
+\index{capi.\+h@{capi.\+h}!body\+Get\+Shape\+Type@{body\+Get\+Shape\+Type}}
+\index{body\+Get\+Shape\+Type@{body\+Get\+Shape\+Type}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Get\+Shape\+Type()}{bodyGetShapeType()}}
+{\footnotesize\ttfamily int body\+Get\+Shape\+Type (\begin{DoxyParamCaption}\item[{void $\ast$}]{body }\end{DoxyParamCaption})}
+
+get the bodies shape type -\/ see Shape\+Type enum 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_aad1f0d6f3c8919f0cdb814e963e4f581}\label{capi_8h_aad1f0d6f3c8919f0cdb814e963e4f581}} 
+\index{capi.\+h@{capi.\+h}!body\+Set\+Angular\+Velocity@{body\+Set\+Angular\+Velocity}}
+\index{body\+Set\+Angular\+Velocity@{body\+Set\+Angular\+Velocity}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Set\+Angular\+Velocity()}{bodySetAngularVelocity()}}
+{\footnotesize\ttfamily void body\+Set\+Angular\+Velocity (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}}}]{v }\end{DoxyParamCaption})}
+
+set angluar velocity -\/ see notes in body\+Set\+Linear\+Velocity 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em v} & velocity \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a6fcb09b5998eafa5081ed23f67eebbf8}\label{capi_8h_a6fcb09b5998eafa5081ed23f67eebbf8}} 
+\index{capi.\+h@{capi.\+h}!body\+Set\+Deactivation@{body\+Set\+Deactivation}}
+\index{body\+Set\+Deactivation@{body\+Set\+Deactivation}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Set\+Deactivation()}{bodySetDeactivation()}}
+{\footnotesize\ttfamily void body\+Set\+Deactivation (\begin{DoxyParamCaption}\item[{void $\ast$}]{b,  }\item[{bool}]{v }\end{DoxyParamCaption})}
+
+set body deactivation 
+\begin{DoxyParams}{Parameters}
+{\em b} & body \\
+\hline
+{\em v} & true if body should be deactivated after a period without collisions \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a4300ab56fc0fc972fbdf6c15ab31b65d}\label{capi_8h_a4300ab56fc0fc972fbdf6c15ab31b65d}} 
+\index{capi.\+h@{capi.\+h}!body\+Set\+Friction@{body\+Set\+Friction}}
+\index{body\+Set\+Friction@{body\+Set\+Friction}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Set\+Friction()}{bodySetFriction()}}
+{\footnotesize\ttfamily void body\+Set\+Friction (\begin{DoxyParamCaption}\item[{void $\ast$}]{s,  }\item[{float}]{f }\end{DoxyParamCaption})}
+
+set bodies friction 
+\begin{DoxyParams}{Parameters}
+{\em s} & the body \\
+\hline
+{\em f} & friction \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a8d67a9e2c22a06dbea2237393d61505e}\label{capi_8h_a8d67a9e2c22a06dbea2237393d61505e}} 
+\index{capi.\+h@{capi.\+h}!body\+Set\+Linear\+Velocity@{body\+Set\+Linear\+Velocity}}
+\index{body\+Set\+Linear\+Velocity@{body\+Set\+Linear\+Velocity}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Set\+Linear\+Velocity()}{bodySetLinearVelocity()}}
+{\footnotesize\ttfamily void body\+Set\+Linear\+Velocity (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}}}]{v }\end{DoxyParamCaption})}
+
+set the velocity of a body -\/ this should not be used every frame rather this should be used one off in special circumstances like teleportation. 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em v} & the velocity \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_acddf692da50b4a00af73bd6983343264}\label{capi_8h_acddf692da50b4a00af73bd6983343264}} 
+\index{capi.\+h@{capi.\+h}!body\+Set\+Position@{body\+Set\+Position}}
+\index{body\+Set\+Position@{body\+Set\+Position}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Set\+Position()}{bodySetPosition()}}
+{\footnotesize\ttfamily void body\+Set\+Position (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}}}]{pos }\end{DoxyParamCaption})}
+
+set the bodies position -\/ see notes in body\+Set\+Linear\+Velocity 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em pos} & the position \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a3a35dfd727669a8d9dc3a943063e7664}\label{capi_8h_a3a35dfd727669a8d9dc3a943063e7664}} 
+\index{capi.\+h@{capi.\+h}!body\+Set\+Restitution@{body\+Set\+Restitution}}
+\index{body\+Set\+Restitution@{body\+Set\+Restitution}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Set\+Restitution()}{bodySetRestitution()}}
+{\footnotesize\ttfamily void body\+Set\+Restitution (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{float}]{r }\end{DoxyParamCaption})}
+
+set the restitution of a body (bouncy-\/ness) 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em r} & restitution \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a53717d1532f8ea2498751519ab1729fc}\label{capi_8h_a53717d1532f8ea2498751519ab1729fc}} 
+\index{capi.\+h@{capi.\+h}!body\+Set\+Rotation@{body\+Set\+Rotation}}
+\index{body\+Set\+Rotation@{body\+Set\+Rotation}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Set\+Rotation()}{bodySetRotation()}}
+{\footnotesize\ttfamily void body\+Set\+Rotation (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{\mbox{\hyperlink{structVec}{Vec}}}]{r }\end{DoxyParamCaption})}
+
+set the rotation of a body as body\+Set\+Rotation\+Eular except using a \mbox{\hyperlink{structVec}{Vec}} 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em r} & the rotation sets a bodies rotation -\/ see warning in body\+Set\+Linear\+Velocity \\
+\hline
+{\em body} & \\
+\hline
+{\em r} & rotation \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_aecd465318dca089ea0a6bd1971e612dc}\label{capi_8h_aecd465318dca089ea0a6bd1971e612dc}} 
+\index{capi.\+h@{capi.\+h}!body\+Set\+Rotation\+Eular@{body\+Set\+Rotation\+Eular}}
+\index{body\+Set\+Rotation\+Eular@{body\+Set\+Rotation\+Eular}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{body\+Set\+Rotation\+Eular()}{bodySetRotationEular()}}
+{\footnotesize\ttfamily void body\+Set\+Rotation\+Eular (\begin{DoxyParamCaption}\item[{void $\ast$}]{body,  }\item[{float}]{pitch,  }\item[{float}]{yaw,  }\item[{float}]{roll }\end{DoxyParamCaption})}
+
+set the rotation of the body (in radians) 
+\begin{DoxyParams}{Parameters}
+{\em body} & \\
+\hline
+{\em pitch,yaw,roll} & rotations around the x,y \& z axis respectivly \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a3fadee39316f37ad415628eaa6de48bd}\label{capi_8h_a3fadee39316f37ad415628eaa6de48bd}} 
+\index{capi.\+h@{capi.\+h}!collision\+Callback@{collision\+Callback}}
+\index{collision\+Callback@{collision\+Callback}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{collision\+Callback()}{collisionCallback()}}
+{\footnotesize\ttfamily void collision\+Callback (\begin{DoxyParamCaption}\item[{void $\ast$}]{u,  }\item[{void($\ast$)(void $\ast$, void $\ast$, const \mbox{\hyperlink{structVec}{Vec}} $\ast$, const \mbox{\hyperlink{structVec}{Vec}} $\ast$, const \mbox{\hyperlink{structVec}{Vec}} $\ast$)}]{callback }\end{DoxyParamCaption})}
+
+set the collision callback 
+\begin{DoxyParams}{Parameters}
+{\em u} & the universe \\
+\hline
+{\em callback} & function pointer to the contact callback\\
+\hline
+\end{DoxyParams}
+void contact(void$\ast$ b1, void$\ast$ b2, const Vec$\ast$ pt\+A, const Vec$\ast$ pt\+B, const Vec$\ast$ norm) 
+\begin{DoxyParams}{Parameters}
+{\em b1} & body A \\
+\hline
+{\em b2} & body B \\
+\hline
+{\em ptA} & point in body A of the contact \\
+\hline
+{\em ptB} & point in body B of the contact \\
+\hline
+{\em norm} & the collision normal \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a8c20b40b740e9e3e158a3f3d9e0382bb}\label{capi_8h_a8c20b40b740e9e3e158a3f3d9e0382bb}} 
+\index{capi.\+h@{capi.\+h}!create\+Body@{create\+Body}}
+\index{create\+Body@{create\+Body}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{create\+Body()}{createBody()}}
+{\footnotesize\ttfamily void$\ast$ create\+Body (\begin{DoxyParamCaption}\item[{void $\ast$}]{u,  }\item[{void $\ast$}]{shape,  }\item[{float}]{mass,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{float}]{z }\end{DoxyParamCaption})}
+
+create a body 
+\begin{DoxyParams}{Parameters}
+{\em u} & the universe or environment the body is in \\
+\hline
+{\em shape} & pointer to the shape to create the body with \\
+\hline
+{\em mass} & mass of the body \\
+\hline
+{\em x,y,z} & position to start the body from \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a302fd9188e5f7ec2f1478adbc2723460}\label{capi_8h_a302fd9188e5f7ec2f1478adbc2723460}} 
+\index{capi.\+h@{capi.\+h}!create\+Box\+Shape@{create\+Box\+Shape}}
+\index{create\+Box\+Shape@{create\+Box\+Shape}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{create\+Box\+Shape()}{createBoxShape()}}
+{\footnotesize\ttfamily void$\ast$ create\+Box\+Shape (\begin{DoxyParamCaption}\item[{void $\ast$}]{uni,  }\item[{float}]{ex,  }\item[{float}]{ey,  }\item[{float}]{ez }\end{DoxyParamCaption})}
+
+creat a box shape 
+\begin{DoxyParams}{Parameters}
+{\em uni} & the universe that the shape is intended for this is for tidying up when the universe is destroyed \\
+\hline
+{\em ex} & X extent of the box \\
+\hline
+{\em ey} & Y extent of the box \\
+\hline
+{\em ez} & Z extent of the box \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_aaf33f25c6b06c812f3c8e7e24792a658}\label{capi_8h_aaf33f25c6b06c812f3c8e7e24792a658}} 
+\index{capi.\+h@{capi.\+h}!create\+Compound\+Shape@{create\+Compound\+Shape}}
+\index{create\+Compound\+Shape@{create\+Compound\+Shape}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{create\+Compound\+Shape()}{createCompoundShape()}}
+{\footnotesize\ttfamily void$\ast$ create\+Compound\+Shape (\begin{DoxyParamCaption}\item[{void $\ast$}]{u }\end{DoxyParamCaption})}
+
+create a compound shape 
+\begin{DoxyParams}{Parameters}
+{\em u} & the universe that releases this shape\\
+\hline
+\end{DoxyParams}
+The compound shape is a \char`\"{}empty\char`\"{} shape you add other shapes to to make a single shape from. \mbox{\Hypertarget{capi_8h_a2edb62e2ee97d3b2e929f05f0a4296fc}\label{capi_8h_a2edb62e2ee97d3b2e929f05f0a4296fc}} 
+\index{capi.\+h@{capi.\+h}!create\+Cylinder\+Shape@{create\+Cylinder\+Shape}}
+\index{create\+Cylinder\+Shape@{create\+Cylinder\+Shape}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{create\+Cylinder\+Shape()}{createCylinderShape()}}
+{\footnotesize\ttfamily void$\ast$ create\+Cylinder\+Shape (\begin{DoxyParamCaption}\item[{void $\ast$}]{u,  }\item[{float}]{x,  }\item[{float}]{y }\end{DoxyParamCaption})}
+
+creates a cylinder shape 
+\begin{DoxyParams}{Parameters}
+{\em u} & the universe that releases this shape \\
+\hline
+{\em x} & the radius of the cylinder \\
+\hline
+{\em y} & the height of the cylinder \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a3eba63bc25305c0e40f04d9d4921859b}\label{capi_8h_a3eba63bc25305c0e40f04d9d4921859b}} 
+\index{capi.\+h@{capi.\+h}!create\+Hinge@{create\+Hinge}}
+\index{create\+Hinge@{create\+Hinge}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{create\+Hinge()}{createHinge()}}
+{\footnotesize\ttfamily void$\ast$ create\+Hinge (\begin{DoxyParamCaption}\item[{void $\ast$}]{uni,  }\item[{void $\ast$}]{bodyA,  }\item[{void $\ast$}]{bodyB,  }\item[{\mbox{\hyperlink{structVec}{Vec}}}]{pivA,  }\item[{\mbox{\hyperlink{structVec}{Vec}}}]{rotA,  }\item[{\mbox{\hyperlink{structVec}{Vec}}}]{pivB,  }\item[{\mbox{\hyperlink{structVec}{Vec}}}]{rotB,  }\item[{bool}]{refA,  }\item[{bool}]{collide }\end{DoxyParamCaption})}
+
+creates a hinge constraint (joint) 
+\begin{DoxyParams}{Parameters}
+{\em uni} & the universe the joint should be in \\
+\hline
+{\em bodyA,bodyB} & the two bodies involved \\
+\hline
+{\em pivA,rotA} & the pivot point and rotation of the hinge axis \\
+\hline
+{\em pivB,rotB} & pivot and rotation relative to bodyB \\
+\hline
+{\em refA} & use reference frame A or not \\
+\hline
+{\em collide} & should these bodies collide or not \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a831c9c64284c9587820bc6c948b7328d}\label{capi_8h_a831c9c64284c9587820bc6c948b7328d}} 
+\index{capi.\+h@{capi.\+h}!create\+Sphere\+Shape@{create\+Sphere\+Shape}}
+\index{create\+Sphere\+Shape@{create\+Sphere\+Shape}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{create\+Sphere\+Shape()}{createSphereShape()}}
+{\footnotesize\ttfamily void$\ast$ create\+Sphere\+Shape (\begin{DoxyParamCaption}\item[{void $\ast$}]{u,  }\item[{float}]{re }\end{DoxyParamCaption})}
+
+creates a sphere shape 
+\begin{DoxyParams}{Parameters}
+{\em u} & the universe that releases this shape \\
+\hline
+{\em re} & radius of sphere \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_ad66b55c68d7a9a2a73dab869c520451c}\label{capi_8h_ad66b55c68d7a9a2a73dab869c520451c}} 
+\index{capi.\+h@{capi.\+h}!create\+Universe@{create\+Universe}}
+\index{create\+Universe@{create\+Universe}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{create\+Universe()}{createUniverse()}}
+{\footnotesize\ttfamily void$\ast$ create\+Universe (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+creates a physics environment \begin{DoxyReturn}{Returns}
+pointer to the environment 
+\end{DoxyReturn}
+\mbox{\Hypertarget{capi_8h_a2226965b7bb6644f0a2b601bb103f57d}\label{capi_8h_a2226965b7bb6644f0a2b601bb103f57d}} 
+\index{capi.\+h@{capi.\+h}!destroy\+Universe@{destroy\+Universe}}
+\index{destroy\+Universe@{destroy\+Universe}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{destroy\+Universe()}{destroyUniverse()}}
+{\footnotesize\ttfamily void destroy\+Universe (\begin{DoxyParamCaption}\item[{void $\ast$}]{uni }\end{DoxyParamCaption})}
+
+releases the environment 
+\begin{DoxyParams}{Parameters}
+{\em uni} & pointer to the previously created environment \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a72629030d4c4b058f0b2f95827ae4932}\label{capi_8h_a72629030d4c4b058f0b2f95827ae4932}} 
+\index{capi.\+h@{capi.\+h}!hinge\+Enable\+Angular\+Motor@{hinge\+Enable\+Angular\+Motor}}
+\index{hinge\+Enable\+Angular\+Motor@{hinge\+Enable\+Angular\+Motor}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{hinge\+Enable\+Angular\+Motor()}{hingeEnableAngularMotor()}}
+{\footnotesize\ttfamily void hinge\+Enable\+Angular\+Motor (\begin{DoxyParamCaption}\item[{void $\ast$}]{hinge,  }\item[{bool}]{enable\+Motor,  }\item[{float}]{target\+Velocity,  }\item[{float}]{max\+Motor\+Impulse }\end{DoxyParamCaption})}
+
+enable rotational motor for a hinge 
+\begin{DoxyParams}{Parameters}
+{\em hinge} & pointer to the constraint \\
+\hline
+{\em enable\+Motor} & true enable \\
+\hline
+{\em target\+Velocity} & the motor will always try to achive this velocity \\
+\hline
+{\em max\+Motor\+Impulse} & limits the impulse the motor can use \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a0ac70731dd11a6f45ec9eb86e659aaea}\label{capi_8h_a0ac70731dd11a6f45ec9eb86e659aaea}} 
+\index{capi.\+h@{capi.\+h}!hinge\+Set\+Limit@{hinge\+Set\+Limit}}
+\index{hinge\+Set\+Limit@{hinge\+Set\+Limit}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{hinge\+Set\+Limit()}{hingeSetLimit()}}
+{\footnotesize\ttfamily void hinge\+Set\+Limit (\begin{DoxyParamCaption}\item[{void $\ast$}]{hinge,  }\item[{float}]{low,  }\item[{float}]{hi }\end{DoxyParamCaption})}
+
+set the hinge angluar limit 
+\begin{DoxyParams}{Parameters}
+{\em hinge} & pointer to the joint \\
+\hline
+{\em low} & set the lower limit $<$ -\/\+PI is unlimited \\
+\hline
+{\em hi} & set the upper limit $>$ PI is unlimited \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a88ef89b4805a4cec55abace835451e52}\label{capi_8h_a88ef89b4805a4cec55abace835451e52}} 
+\index{capi.\+h@{capi.\+h}!set\+Constraint\+Param@{set\+Constraint\+Param}}
+\index{set\+Constraint\+Param@{set\+Constraint\+Param}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{set\+Constraint\+Param()}{setConstraintParam()}}
+{\footnotesize\ttfamily void set\+Constraint\+Param (\begin{DoxyParamCaption}\item[{void $\ast$}]{c,  }\item[{int}]{num,  }\item[{float}]{value,  }\item[{int}]{axis }\end{DoxyParamCaption})}
+
+sets a constrains parameters 
+\begin{DoxyParams}{Parameters}
+{\em c} & constraint pointer \\
+\hline
+{\em num} & see Constraint\+Params enum \\
+\hline
+{\em value} & \\
+\hline
+{\em axis} & 0-\/5 but see implementation as some are handled differently for example hinge only uses axis 5 (which can be refered to as -\/1) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{capi_8h_a6003cacda9340216eeb49067b6d8808d}\label{capi_8h_a6003cacda9340216eeb49067b6d8808d}} 
+\index{capi.\+h@{capi.\+h}!set\+Gravity@{set\+Gravity}}
+\index{set\+Gravity@{set\+Gravity}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{set\+Gravity()}{setGravity()}}
+{\footnotesize\ttfamily void set\+Gravity (\begin{DoxyParamCaption}\item[{void $\ast$}]{uni,  }\item[{float}]{x,  }\item[{float}]{y,  }\item[{float}]{z }\end{DoxyParamCaption})}
+
+
+
+muhahahaha 
+
+sets the environments gravity \mbox{\Hypertarget{capi_8h_a470bfe1b792ff9ea4ad43413b315bda7}\label{capi_8h_a470bfe1b792ff9ea4ad43413b315bda7}} 
+\index{capi.\+h@{capi.\+h}!step\+World@{step\+World}}
+\index{step\+World@{step\+World}!capi.\+h@{capi.\+h}}
+\subsubsection{\texorpdfstring{step\+World()}{stepWorld()}}
+{\footnotesize\ttfamily void step\+World (\begin{DoxyParamCaption}\item[{void $\ast$}]{u,  }\item[{float}]{dt,  }\item[{int}]{i }\end{DoxyParamCaption})}
+
+step the world 
+\begin{DoxyParams}{Parameters}
+{\em u} & the environment to step \\
+\hline
+{\em dt} & the amount of time to step \\
+\hline
+{\em i} & number of iterations \\
+\hline
+\end{DoxyParams}

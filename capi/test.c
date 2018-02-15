@@ -13,6 +13,7 @@ void contact(void* b1, void* b2, const Vec* ptA, const Vec* ptB, const Vec* norm
 	printf("ptA %2.4lf %2.4lf %2.4lf ", ptA->x, ptA->y, ptA->z);
 	printf("ptB %2.4lf %2.4lf %2.4lf ", ptB->x, ptB->y, ptB->z);
 	printf("Nrm %2.4lf %2.4lf %2.4lf\n", norm->x, norm->y, norm->z);
+	printf("------\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -29,7 +30,7 @@ int main(int argc, char* argv[]) {
 	//void* fallingShape = createBoxShape(uni, .5, .5, .5);
 	void* fallingShape = createCylinderShape(uni, .5, 1);
 	
-	fallingBody = createBody(uni, fallingShape, 10, 0, 0, 2.5);
+	fallingBody = createBody(uni, fallingShape, 10, 0, 0, 1.01);
 	printf("shape type = %i\n",bodyGetShapeType(fallingBody));
 	bodySetRestitution(fallingBody, .9);
 	printf("ball friction was %lf\n",bodyGetFriction(fallingBody));
@@ -42,7 +43,7 @@ int main(int argc, char* argv[]) {
 	imp.x=0.1; imp.y=0.12; imp.z=0;	
 	bodyApplyImpulse(fallingBody, &imp, &pos);
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 18; i++) {
 		stepWorld(uni, 1./120., 8);
 		
 		collisionCallback(uni, &contact );
