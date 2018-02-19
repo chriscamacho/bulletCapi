@@ -21,6 +21,33 @@ void* createUniverse() {
 	return (void*)u;
 }
 
+void removeBody(void* u, void* b) {
+	UNI(u)->dynamicsWorld->removeRigidBody(BODY(b));
+}
+
+void deleteShape(void* u, void* s) {
+	UNI(u)->collisionShapes->remove(SHAPE(s));
+	delete SHAPE(s);
+}
+
+void deleteBody(void* b) {
+	if (BODY(b) && BODY(b)->getMotionState()) {
+		delete BODY(b)->getMotionState();
+	}
+	delete BODY(b);
+}
+
+void* bodyGetShape(void* b) {
+	return BODY(b)->getCollisionShape();
+}
+
+int compoundGetNumChildren(void* s) {
+	return ((btCompoundShape*)s)->getNumChildShapes();
+}
+
+void compoundRemoveShape(void* s, int index) {
+	((btCompoundShape*)s)->removeChildShapeByIndex(index);
+}
 
 void destroyUniverse(void* u) {
 	
@@ -96,7 +123,7 @@ void* createCylinderShape(void* u,  float x, float y) {
 	return (void*)shape;	
 }
 
-/*
+
 void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
 								Vec parentAxis, Vec childAxis) {
 
@@ -121,8 +148,8 @@ void hinge2setLowerLimit(void* h, float l) {
 void hinge2setUpperLimit(void* h, float l) {
 	((btHinge2Constraint*)h)->setUpperLimit(l);
 }
-*/
-void* createHinge(void* uni, void* bodyA, void* bodyB, 
+
+void* createHingeConstraint(void* uni, void* bodyA, void* bodyB, 
 					Vec pivA, Vec rotA, 
 					Vec pivB, Vec rotB, bool refA, bool collide) {
 
@@ -164,6 +191,14 @@ void hingeEnableAngularMotor(void* hinge, bool enableMotor,
 
 void setConstraintParam(void* c, int num, float value, int axis) {
 	JOINT(c)->setParam(num, value, axis);
+}
+
+bool isConstraintEnabled(void* c) {
+	return JOINT(c)->isEnabled();
+}
+ 
+void setConstraintEnabled(void* c, bool en) {
+	JOINT(c)->setEnabled(en);
 }
 
 void* createBody(void* u, void* shape, float mass, float x, float y, float z) {

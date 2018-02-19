@@ -313,15 +313,12 @@ int bodyGetShapeType(void* body);
 void bodySetDeactivation(void* b, bool v);
 
 
-/* TODO started adding this thinking it was a normal hinge
- * needs a few extra support functions for editing properties
- * seems to be working... 
- * 
+
 void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
 								Vec parentAxis, Vec childAxis);
 void hinge2setLowerLimit(void* h, float l);
 void hinge2setUpperLimit(void* h, float l);
-*/
+
 
 /** creates a hinge constraint (joint)
  * @param uni the universe the joint should be in
@@ -331,7 +328,7 @@ void hinge2setUpperLimit(void* h, float l);
  * @param refA use reference frame A or not
  * @param collide should these bodies collide or not
  */
-void* createHinge(void* uni, void* bodyA, void* bodyB, 
+void* createHingeConstraint(void* uni, void* bodyA, void* bodyB, 
 					Vec pivA, Vec rotA, 
 					Vec pivB, Vec rotB, bool refA, bool collide);
 
@@ -361,6 +358,51 @@ void hingeEnableAngularMotor(void* hinge, bool enableMotor, float targetVelocity
  * for example hinge only uses axis 5 (which can be refered to as -1)
  */
 void setConstraintParam(void* c, int num, float value, int axis);
+
+/** is a constraint enabled
+ * @param c constraint pointer
+ */
+bool isConstraintEnabled(void* c);
+
+/** enable or disable a constraint
+ * @param c constraint pointer
+ * @param en true or false to enable / disable
+ */ 
+void setConstraintEnabled(void* c, bool en);
+
+
+/** remove body from the universe
+ * @param u universe pointer
+ * @param b body
+ */
+void removeBody(void* u, void* b);
+
+/** delete a shape
+ * @param u universe pointer
+ * @param s shape
+ */ 
+void deleteShape(void* u, void* s);
+
+/** delete a body (release its resources)
+ * @param b body
+ */
+void deleteBody(void* b);
+
+/** get the shape attached to the body
+ * @param b body
+ */
+void* bodyGetShape(void* b);
+
+/** number of shapes in a compound
+ * @param s shape
+ */
+int compoundGetNumChildren(void* s);
+
+/** remove a shape from a compound shape
+ * @param s shape
+ * @param index
+ */
+void compoundRemoveShape(void* s, int index);
 
 #endif
 

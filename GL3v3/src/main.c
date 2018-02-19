@@ -188,9 +188,10 @@ int main(void) {
 		Vec sz = {2, .5, 4};
 		void* shp = createBoxShape(uni, sz.x, sz.y, sz.z);
 		phys[1].body = createBody(uni, shp, 0,  -4.2, 8, 0);
+		bodySetRotationEular(phys[1].body, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 		phys[1].sz = sz;
 		
-		sz = (Vec){8, 6, .5};
+		sz = (Vec){8, 8, .5};
 		shp = createBoxShape(uni, sz.x, sz.y, sz.z);
 		phys[2].body = createBody(uni, shp, 40,  0.2, 8, 0);
 		phys[2].sz = sz;
@@ -257,9 +258,9 @@ int main(void) {
         phys[i].sz.x = sx;
         phys[i].sz.y = sy;
         phys[i].sz.z = sz;
-        float px = 10.f-rnd(20.f);
+        float px = 20.f-rnd(40.f);
         float py = 30.f-rnd(8.f);
-        float pz = 10.f-rnd(20.f);
+        float pz = 20.f-rnd(40.f);
         phys[i].body = createBody(uni, fs, (.5f+sx)*(.5f+sy)*(.5f+sz),  px, py, pz);
         
         bodySetRotationEular(phys[i].body, rnd(6.28318530718), rnd(6.28318530718), rnd(6.28318530718));
@@ -309,68 +310,82 @@ int main(void) {
         for (int i=0; i<NumObj; i++) {
 			
 			Vec p;
-			bodyGetPosition(phys[i].body, &p);
-			if (p.y<-10 && i>2) {
-				p.x=0;
-				p.y=30;
-				p.z=0;
-				bodySetPosition(phys[i].body, p);
-				p.x=0;
-				p.y=0;
-				p.z=0;
-				bodySetLinearVelocity(phys[i].body, p);
-				bodySetAngularVelocity(phys[i].body, p);
-				p.x = rnd(6.28318530718);
-				p.y = rnd(6.28318530718);
-				p.z = rnd(6.28318530718);
-				bodySetRotation(phys[i].body, p);
+			if (phys[i].body != 0) {
+				bodyGetPosition(phys[i].body, &p);
+				if (p.y<-10 && i>2) {
+					
+					p.x=4;
+					p.y=30;
+					p.z=0;
+					bodySetPosition(phys[i].body, p);
+					p.x=0;
+					p.y=0;
+					p.z=0;
+					bodySetLinearVelocity(phys[i].body, p);
+					bodySetAngularVelocity(phys[i].body, p);
+					p.x = rnd(6.28318530718);
+					p.y = rnd(6.28318530718);
+					p.z = rnd(6.28318530718);
+					bodySetRotation(phys[i].body, p);
+					
+					// TODO (check further) compounds don't seem to leak ???
+					// removing children before causes seg or double free...
+					/*
+					removeBody(uni, phys[i].body);					
+					deleteShape(uni, bodyGetShape(phys[i].body));
+					deleteBody(phys[i].body);
+					phys[i].body = 0;
+					*/
+					
+				}
 			}
 			
-			
-			bodyGetOpenGLMatrix(phys[i].body, (float*)&mod);
-
-            kmMat4Multiply(&mvp, &vp, &mod);
-            kmMat4Multiply(&mv, &view, &mod);
-
-            int s = bodyGetShapeType(phys[i].body);
-
-            if (s==T_BOX) {
-                drawObj(&boxObj, phys[i].sz, 1,&mvp, &mv, lightDir, viewDir);
-            }
-            if (s==T_SPHERE) {
-                drawObj(&ballObj, phys[i].sz, 0,&mvp, &mv, lightDir, viewDir);
-            }
-            if (s==T_CYLINDER) {
-                drawObj(&drumObj, phys[i].sz, 2,&mvp, &mv, lightDir, viewDir);
-			}
-			if (s==T_COMPOUND) { // for lazyness all compounds the same
-
-				Vec sz = { 1.f, 1.f, 1.f };
-				kmMat4 t,t2;
-				
-				kmMat4Translation(&t, -1.5f,0,0);
-				kmMat4Multiply(&mod, &mod, &t);		
-				kmMat4Multiply(&mvp, &vp, &mod);
-				kmMat4Multiply(&mv, &view, &mod);
-				
-				drawObj(&ballObj, sz, 3, &mvp, &mv, lightDir, viewDir);
-				
-				kmMat4Translation(&t, 3.f,0,0);
-				kmMat4Multiply(&mod, &mod, &t);
-				kmMat4Multiply(&mvp, &vp, &mod);
-				kmMat4Multiply(&mv, &view, &mod);
-				drawObj(&ballObj, sz, 3, &mvp, &mv, lightDir, viewDir);	
-				
-				sz = (Vec){3.f,.5f,.5f,0.f};
-				kmMat4Translation(&t, -1.5f,1.f,0);
-				kmMat4RotationY(&t2, 0.01745329252f * 90.f);
-				kmMat4Multiply(&mod, &mod, &t);						
-				kmMat4Multiply(&mod, &mod, &t2);		
+			if (phys[i].body != 0) {
+				bodyGetOpenGLMatrix(phys[i].body, (float*)&mod);
 
 				kmMat4Multiply(&mvp, &vp, &mod);
 				kmMat4Multiply(&mv, &view, &mod);
 
-				drawObj(&boxObj, sz , 3, &mvp, &mv, lightDir, viewDir);
+				int s = bodyGetShapeType(phys[i].body);
+
+				if (s==T_BOX) {
+					drawObj(&boxObj, phys[i].sz, 1,&mvp, &mv, lightDir, viewDir);
+				}
+				if (s==T_SPHERE) {
+					drawObj(&ballObj, phys[i].sz, 0,&mvp, &mv, lightDir, viewDir);
+				}
+				if (s==T_CYLINDER) {
+					drawObj(&drumObj, phys[i].sz, 2,&mvp, &mv, lightDir, viewDir);
+				}
+				if (s==T_COMPOUND) { // for lazyness all compounds the same
+
+					Vec sz = { 1.f, 1.f, 1.f };
+					kmMat4 t,t2;
+					
+					kmMat4Translation(&t, -1.5f,0,0);
+					kmMat4Multiply(&mod, &mod, &t);		
+					kmMat4Multiply(&mvp, &vp, &mod);
+					kmMat4Multiply(&mv, &view, &mod);
+					
+					drawObj(&ballObj, sz, 3, &mvp, &mv, lightDir, viewDir);
+					
+					kmMat4Translation(&t, 3.f,0,0);
+					kmMat4Multiply(&mod, &mod, &t);
+					kmMat4Multiply(&mvp, &vp, &mod);
+					kmMat4Multiply(&mv, &view, &mod);
+					drawObj(&ballObj, sz, 3, &mvp, &mv, lightDir, viewDir);	
+					
+					sz = (Vec){3.f,.5f,.5f,0.f};
+					kmMat4Translation(&t, -1.5f,1.f,0);
+					kmMat4RotationY(&t2, 0.01745329252f * 90.f);
+					kmMat4Multiply(&mod, &mod, &t);						
+					kmMat4Multiply(&mod, &mod, &t2);		
+
+					kmMat4Multiply(&mvp, &vp, &mod);
+					kmMat4Multiply(&mv, &view, &mod);
+
+					drawObj(&boxObj, sz , 3, &mvp, &mv, lightDir, viewDir);
+				}
 			}
         }
 
