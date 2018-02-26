@@ -123,12 +123,23 @@ void* createSphereShape(void* u, float re) {
 	return (void*)shape;
 }
 
-void* createCylinderShape(void* u,  float x, float y) {
-	btCollisionShape* shape = new btCylinderShapeZ(btVector3(x,x,y));
+void* createCylinderShapeZ(void* u,  float r, float l) {
+	btCollisionShape* shape = new btCylinderShapeZ(btVector3(r,r,l));
 	UNI(u)->collisionShapes->push_back(shape);
 	return (void*)shape;	
 }
 
+void* createCylinderShapeY(void* u,  float r, float l) {
+	btCollisionShape* shape = new btCylinderShape(btVector3(r,l,r));
+	UNI(u)->collisionShapes->push_back(shape);
+	return (void*)shape;	
+}
+
+void* createCylinderShapeX(void* u,  float r, float l) {
+	btCollisionShape* shape = new btCylinderShapeX(btVector3(l,r,r));
+	UNI(u)->collisionShapes->push_back(shape);
+	return (void*)shape;	
+}
 
 void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
 								Vec parentAxis, Vec childAxis) {

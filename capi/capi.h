@@ -163,12 +163,26 @@ void* createBoxShape(void* uni, float ex, float ey, float ez);
  */
 void* createSphereShape(void* u, float re);
 
-/** creates a cylinder shape
+/** creates a cylinder shape, length along the Z axis
  * @param u the universe that releases this shape
- * @param x the radius of the cylinder
- * @param y the height of the cylinder
+ * @param r the radius of the cylinder
+ * @param l the length of the cylinder
  */
-void* createCylinderShape(void* u,  float x, float y);
+void* createCylinderShapeZ(void* u,  float r, float l);
+
+/** creates a cylinder shape, length along the Y axis
+ * @param u the universe that releases this shape
+ * @param r the radius of the cylinder
+ * @param l the length of the cylinder
+ */
+void* createCylinderShapeY(void* u,  float r, float l);
+
+/** creates a cylinder shape, length along the X axis
+ * @param u the universe that releases this shape
+ * @param r the radius of the cylinder
+ * @param l the length of the cylinder
+ */
+void* createCylinderShapeX(void* u,  float r, float l);
 
 /** create a compound shape
  * @param u the universe that releases this shape

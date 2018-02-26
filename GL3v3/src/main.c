@@ -252,7 +252,7 @@ int main(void) {
 					sx /= 2.0f;
 					sy = sx;
 					sz *= 2.0f;
-					fs = createCylinderShape(uni, sx, sz);
+					fs = createCylinderShapeZ(uni, sx, sz);
 				}
 			}
 		}
