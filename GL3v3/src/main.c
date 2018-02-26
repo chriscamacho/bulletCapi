@@ -171,14 +171,15 @@ int main(void) {
     setGravity(uni, 0,-9.98,0);
 
 	{
-		Vec sz = {20, 5, 20};
+		Vec sz = {200, 5, 200};
 		void* groundShape = createBoxShape(uni, sz.x, sz.y, sz.z);	// size 20, 5, 20
-		phys[0].body = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
+		phys[0].body = createBody(uni, groundShape, 0, 180, 20.4, -180);	// 0 mass == static pos 0,0,-5
 		#define SLOPE 4.f
 
 		bodySetRestitution(phys[0].body, 1.f);
 		bodySetFriction(phys[0].body, 1.f);
 		bodySetRotationEular(phys[0].body, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
+
 
 		phys[0].sz = sz;
 	}
@@ -205,7 +206,7 @@ int main(void) {
 		pivB = (Vec){-8,0,0};
 		rotB = (Vec){0,1.5707963268,0};
 		
-		hinge = createHinge(uni, phys[1].body, phys[2].body, pivA, rotA, 
+		hinge = createHingeConstraint(uni, phys[1].body, phys[2].body, pivA, rotA, 
 									pivB, rotB, false, false);
 		hingeSetLimit(hinge, -PI / 2.0f , PI / 2.0f); // > pi == unlimited
 		hingeEnableAngularMotor(hinge, true, 

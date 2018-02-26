@@ -57,6 +57,12 @@ void destroyUniverse(void* u) {
 		btRigidBody* body = btRigidBody::upcast(obj);
 		if (body && body->getMotionState())
 		{
+			while (body->getNumConstraintRefs())
+			{
+				btTypedConstraint* constraint = body->getConstraintRef(0);
+				UNI(u)->dynamicsWorld->removeConstraint(constraint);
+				delete constraint;
+			}
 			delete body->getMotionState();
 		}
 		UNI(u)->dynamicsWorld->removeCollisionObject(obj);
