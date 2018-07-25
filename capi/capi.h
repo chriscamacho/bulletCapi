@@ -26,7 +26,7 @@ typedef struct {
 	float x,y,z,w;
 } Vec;
 
-// copyed from btBroadphaseProxy.h so C app doesn't have to import
+// copied from btBroadphaseProxy.h so C app doesn't have to import
 // bullet c++ headers
 //
 // TODO !!! find some better way!

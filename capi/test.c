@@ -26,9 +26,9 @@ int main(int argc, char* argv[]) {
 	groundBody = createBody(uni, groundShape, 0, 0, 0, -5);	// 0 mass == static pos 0,0,-5
 	bodySetRestitution(groundBody, .9);
 	
-	//void* fallingShape = createSphereShape(uni, 1.);
+	void* fallingShape = createSphereShape(uni, 1.);
 	//void* fallingShape = createBoxShape(uni, .5, .5, .5);
-	void* fallingShape = createCylinderShape(uni, .5, 1);
+	//void* fallingShape = createCylinderShapeY(uni, .5, 1);
 	
 	fallingBody = createBody(uni, fallingShape, 10, 0, 0, 1.01);
 	printf("shape type = %i\n",bodyGetShapeType(fallingBody));
