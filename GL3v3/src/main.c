@@ -15,7 +15,7 @@
 
 void* uni;
 
-#define NumObj 240
+#define NumObj 480
 
 phys_t phys[NumObj];
 
@@ -35,6 +35,10 @@ kmVec4 viewPort= {0,0,Iwidth,Iheight};
 
 #define rnd(x) (float)rand()/(float)(RAND_MAX/x)
 
+void* vehicleBody;
+void* wheelConstr[4];
+void* wheelBody[4];
+
 static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
 }
@@ -45,6 +49,11 @@ static void key_callback(GLFWwindow* window, int key, int scancode,
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+/*
+ * 
+ *  framebuffer resize keeps aspect ratio constant 
+ * 
+ */
 void framebufferSizeCallback(GLFWwindow* window, int w, int h)
 {
 	// this will cause some flickering during resize
@@ -81,6 +90,13 @@ void windowSizeCallback(GLFWwindow* window, int w, int h) {
 }
 
 int main(void) {
+    
+    /*
+     * 
+     * set up OpenGL stuff
+     * 
+     * 
+     */
 
     GLFWwindow* window;
 
@@ -142,10 +158,10 @@ int main(void) {
 
     kmMat4Identity(&view);
 
-    pEye.x = 0;
-    pEye.y = 12;
-    pEye.z = 50;
-    pCentre.x = 0;
+    pEye.x = 40;
+    pEye.y = 8;
+    pEye.z = 20;
+    pCentre.x = 10;
     pCentre.y = 0;
     pCentre.z = 0;
     pUp.x = 0;
@@ -166,14 +182,20 @@ int main(void) {
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_SCISSOR_TEST);
-
+    
+    /*
+     * 
+     * setup physics stuff 
+     * 
+     */
+     
     uni = createUniverse();
     setGravity(uni, 0,-9.98,0);
 
-	{
+	{ // ground
 		Vec sz = {200, 5, 200};
 		void* groundShape = createBoxShape(uni, sz.x, sz.y, sz.z);	// size 20, 5, 20
-		phys[0].body = createBody(uni, groundShape, 0, 180, 20.4, -180);	// 0 mass == static pos 0,0,-5
+		phys[0].body = createBody(uni, groundShape, 0, 180, 20, -180);	// 0 mass == static pos 0,0,-5
 		#define SLOPE 4.f
 
 		bodySetRestitution(phys[0].body, 1.f);
@@ -185,7 +207,8 @@ int main(void) {
 	}
 	
 	void* hinge;
-	{
+	{ // paddle thingie to move other shapes about
+    
 		Vec sz = {2, .5, 4};
 		void* shp = createBoxShape(uni, sz.x, sz.y, sz.z);
 		phys[1].body = createBody(uni, shp, 0,  -4.2, 8, 0);
@@ -210,15 +233,86 @@ int main(void) {
 									pivB, rotB, false, false);
 		hingeSetLimit(hinge, -PI / 2.0f , PI / 2.0f); // > pi == unlimited
 		hingeEnableAngularMotor(hinge, true, 
-						-2, 10000);
-
-
+						-4, 10);
 		setConstraintParam(hinge, C_ERP, 1, -1);
 		setConstraintParam(hinge, C_CFM, 0, -1);
 
 		
 	}
-	
+
+    // just for clarity
+    #define engineAxis 3
+    #define steeringAxis 5
+    #define suspensionAxis 2
+
+	{   /*
+         *
+         *    set up vehicle
+         * 
+         */
+
+        //void* chass;
+        void* vehicleShape;
+        //chass = createBoxShape(uni, 1.f, 0.5f, 2.f);
+		//vehicleShape = createCompoundShape(uni);
+		//compoundAddChild(vehicleShape, chass, 0, 1, 0, 0,0,0);
+		vehicleShape = createBoxShape(uni, 1.f, 0.5f, 2.f);
+        #define fheight 4.f
+		vehicleBody = createBody(uni, vehicleShape, 8, 40, fheight, 0);
+        
+
+		Vec wheelPos[4] = {
+			{40-1,fheight-1.2, 1.75},
+			{40+1,fheight-1.2, 1.75},
+			{40+1,fheight-1.2,-1.75},
+			{40-1,fheight-1.2,-1.75}
+		};
+
+        bodySetDeactivation(vehicleBody, false);
+        void* wheelShape = createCylinderShapeX(uni, 0.5, 0.4);
+
+		for (int i = 0; i<4; i++) {
+
+			wheelBody[i] = createBody(uni, wheelShape, 2, 
+                                            wheelPos[i].x, 
+                                            wheelPos[i].y, 
+                                            wheelPos[i].z);
+            bodySetFriction(wheelBody[i],1111);
+            bodySetDeactivation(wheelBody[i], false);
+            
+            Vec parentAxis = {0,1,0};
+            Vec childAxis = {1,0,0};
+            //Vec anchor = {20,fheight,0};
+            Vec anchor = wheelPos[i];
+            wheelConstr[i] = createHinge2Constraint(uni, vehicleBody, wheelBody[i],
+                                    anchor, parentAxis, childAxis, true);
+
+            
+            if (i<2) { // engine motor
+                hinge2enableMotor(wheelConstr[i], engineAxis, true);
+                hinge2setMaxMotorForce(wheelConstr[i], engineAxis, 1000);
+                hinge2setTargetVelocity(wheelConstr[i], engineAxis, 0);
+            }
+            // steering (locks steering axis on engine too)
+            hinge2enableMotor(wheelConstr[i], steeringAxis, true);
+            hinge2setMaxMotorForce(wheelConstr[i], steeringAxis, 1000);
+            hinge2setTargetVelocity(wheelConstr[i], steeringAxis, 0);
+            //hinge2setLimit(wheelConstr[i], steeringAxis, -PI / 8.0f, PI / 8.0f);
+
+            setConstraintParam(wheelConstr[i], C_CFM, 1.f, suspensionAxis);//0.15f, 2);
+            setConstraintParam(wheelConstr[i], C_ERP, 1.f, suspensionAxis); //0.35f, 2);
+
+            hinge2setDamping(wheelConstr[i],  suspensionAxis, 20.0, true);
+            hinge2setStiffness(wheelConstr[i], suspensionAxis, 40.0, true);
+            
+		}
+	}
+    
+	/*
+     * 
+     * set up all the "loose" physics objects
+     * 
+     */
 	
     for (int i=3; i<NumObj; i++) {
         void* fs;
@@ -233,13 +327,13 @@ int main(void) {
 			// for lazyness all compounds are identical having exactly shapes
 			fs = createCompoundShape(uni);
 			void* c = createSphereShape(uni, 1.f);
-			addCompoundChild(fs, c, -1.5f, 0, 0, 0,0,0);
+			compoundAddChild(fs, c, -1.5f, 0, 0, 0,0,0);
 			c = createSphereShape(uni, 1.f);
-			addCompoundChild(fs, c, 1.5f, 0, 0, 0,0,0);
+			compoundAddChild(fs, c, 1.5f, 0, 0, 0,0,0);
 			// box made long on wrong axis to check local
 			// orientation changes of shape on the compound works
 			c = createBoxShape(uni, 3.f, 0.5f, 0.5f);
-			addCompoundChild(fs, c, 0,1.f,0, 0.01745329252f * 90,0,0);
+			compoundAddChild(fs, c, 0,1.f,0, 0.01745329252f * 90,0,0);
 		} else {
 			if (i<105) {
 				fs = createBoxShape(uni, sx, sy, sz);
@@ -273,7 +367,9 @@ int main(void) {
     glCheckError(__FILE__,__LINE__);
     
     int hingeCount = 0;
-    int hingeDir = -1;
+    int hingeDir = -4;
+    float steer=0;
+    float engine=0;
     
     while (!glfwWindowShouldClose(window)) {
         // draw the whole window black
@@ -292,11 +388,11 @@ int main(void) {
         stepWorld(uni, 1.f/60.f, 8);
         
         hingeCount++;
-        if (hingeCount > 240) {
+        if (hingeCount > 80) {
 			hingeCount = 0;
 			hingeDir = -hingeDir;
 			hingeEnableAngularMotor(hinge, true, 
-						hingeDir, 10000);
+						hingeDir, 10);
 		}
 
         a+=0.01f;
@@ -309,6 +405,7 @@ int main(void) {
         kmVec3Normalize(&lightDir, &lightDir);
 
         for (int i=0; i<NumObj; i++) {
+//        for (int i=0; i<3; i++) {
 			
 			Vec p;
 			if (phys[i].body != 0) {
@@ -390,6 +487,77 @@ int main(void) {
 			}
         }
 
+        bool noSteer;
+        noSteer = true;
+        float a1 = hinge2getAngle1(wheelConstr[0]);
+        float a2 = hinge2getAngle1(wheelConstr[1]);
+        #define mt .5
+        if (glfwGetKey(window, GLFW_KEY_LEFT) && a1>-mt && a2>-mt) {
+            noSteer = false;
+            steer+=1;
+        }
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) && a1<mt && a2<mt) {
+            noSteer = false;
+            steer-=1;
+        }
+        
+        // seems the two steered wheels can get out of sync so
+        // auto centre them independantly
+        if (noSteer) {
+            #define ctr 0.01
+            steer=0;
+            if (a1>ctr) steer=1;
+            if (a1<ctr) steer=-1;
+            hinge2setTargetVelocity(wheelConstr[0], steeringAxis, -steer);
+            steer=0;
+            if (a2>ctr) steer=1;
+            if (a2<ctr) steer=-1;
+            hinge2setTargetVelocity(wheelConstr[1], steeringAxis, -steer);
+        }
+        
+        if (glfwGetKey(window, GLFW_KEY_UP)) {
+            engine+=1;
+            if (engine>10) engine=10;
+        } else {
+            engine*=.99f;
+        }
+        
+        if (!noSteer) {
+            hinge2setTargetVelocity(wheelConstr[0], steeringAxis, -steer);
+            hinge2setTargetVelocity(wheelConstr[1], steeringAxis, -steer);
+        }
+        hinge2setTargetVelocity(wheelConstr[0], engineAxis, -engine);
+        hinge2setTargetVelocity(wheelConstr[1], engineAxis, -engine);
+        
+        //printf("angle %f, %f\n",hinge2getAngle1(wheelConstr[0]),hinge2getAngle2(wheelConstr[0]));
+        
+        // draw vehicle here
+        bodyGetOpenGLMatrix(vehicleBody, (float*)&mod);
+        kmMat4Multiply(&mvp, &vp, &mod);
+        kmMat4Multiply(&mv, &view, &mod);
+        Vec sz = {1,.5,2};
+        drawObj(&boxObj, sz, 1,&mvp, &mv, lightDir, viewDir);
+        
+        kmMat4 r;
+        kmMat4RotationY(&r, 0.01745329252f * 90.f);
+        for (int i=0; i<4; i++) {
+            Vec sz={.5,.5,.4};
+            bodyGetOpenGLMatrix(wheelBody[i], (float*)&mod);
+            kmMat4Multiply(&mod, &mod, &r);
+            kmMat4Multiply(&mvp, &vp, &mod);
+            kmMat4Multiply(&mv, &view, &mod);
+            drawObj(&drumObj, sz, 2,&mvp, &mv, lightDir, viewDir);
+        }
+        
+        Vec p;
+        bodyGetPosition(vehicleBody, &p);
+        kmMat4LookAt(&view, &pEye, (kmVec3*)(&p), &pUp);
+        kmVec3Subtract(&viewDir,&pEye,&pCentre);
+        kmVec3Normalize(&viewDir,&viewDir);
+        kmMat4Multiply(&vp, &projection, &view);
+        
+        
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
 

@@ -198,7 +198,7 @@ void* createCompoundShape(void* u);
  * @param x,y,z local position of shape in the compound
  * @param yaw,pitch,roll local rotation in the compound
  */
-void addCompoundChild(void* compound, void* child, float x, float y, float z,
+void compoundAddChild(void* compound, void* child, float x, float y, float z,
 						float yaw, float pitch, float roll);
 
 /** create a body
@@ -327,12 +327,68 @@ int bodyGetShapeType(void* body);
 void bodySetDeactivation(void* b, bool v);
 
 
-
+/** create a hinge2 constraint
+ * @param u universe
+ * @param bodyA parent body constrained
+ * @param bodyB child body constrained
+ * @param anchor constraint centre
+ * @param parentAxis orientation of parent
+ * @param childAxis orientation of child
+ */
 void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
-								Vec parentAxis, Vec childAxis);
+								Vec parentAxis, Vec childAxis, bool collide);
+
+/**  set the lower limit of a hinge2 constraint
+ * @param h pointer to the hinge2
+ * @param l value of the limit
+ */
 void hinge2setLowerLimit(void* h, float l);
+
+/**  set the upper limit of a hinge2 constraint
+ * @param h pointer to the hinge2
+ * @param l value of the limit
+ */
 void hinge2setUpperLimit(void* h, float l);
 
+/** enable (or disable) a motor on a hinge2 constraint
+ * @param h pointer to hinge2 constraint
+ * @param index which motor to effect
+ * @param onOff true for on, false for off
+ */
+void hinge2enableMotor(void* h, int index, bool onOff);
+
+/** set the maximum motor force for a hinge2 motor
+ * @param h pointer to hinge2 constraint
+ * @param index which motor to change
+ * @param force maximum force
+ */
+void hinge2setMaxMotorForce(void* h, int index, float force);
+
+/** set the target velocity for a hinge2 axis motor
+ * @param h pointer to hinge2 constraint
+ * @param index which axis
+ * @param vel the target velocity
+ */
+void hinge2setTargetVelocity(void* h, int index, float vel);
+
+/** sets damping for a hinge2 axis
+ * @param h pointer to hinge2 constraint
+ * @param index the axis
+ * @param damping how much damping for the axis
+ * @param limitIfNeeded normally defaults to true
+ */
+void hinge2setDamping(void* h, int index, float damping, bool limitIfNeeded);
+
+/** sets stifness for a hinge2 axis
+ * @param h pointer to hinge2 constraint
+ * @param index the axis
+ * @param stiffness how stiff the axis is
+ * @param limitIfNeeded normally defaults to true
+ */
+void hinge2setStiffness(void* h, int index, float stiffness, bool limitIfNeeded);
+
+float hinge2getAngle1(void* h);
+float hinge2getAngle2(void* h);
 
 /** creates a hinge constraint (joint)
  * @param uni the universe the joint should be in

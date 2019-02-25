@@ -103,7 +103,7 @@ void* createCompoundShape(void* u) {
 	return (void*)shape;
 }
 
-void addCompoundChild(void* compound, void* child, float x, float y, float z,
+void compoundAddChild(void* compound, void* child, float x, float y, float z,
 						float yaw, float pitch, float roll) {
 	
 	btTransform localTrans;
@@ -142,7 +142,7 @@ void* createCylinderShapeX(void* u,  float r, float l) {
 }
 
 void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
-								Vec parentAxis, Vec childAxis) {
+								Vec parentAxis, Vec childAxis, bool collide) {
 
 		btVector3 anc(anchor.x, anchor.y, anchor.z);
 		btVector3 pax(parentAxis.x, parentAxis.y, parentAxis.z);
@@ -151,12 +151,12 @@ void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
 		btHinge2Constraint* hinge2 = new btHinge2Constraint(
 				*BODY(bodyA), *BODY(bodyB), 
 				anc, pax, cax);
-		UNI(u)->dynamicsWorld->addConstraint(hinge2, true);
+		UNI(u)->dynamicsWorld->addConstraint(hinge2, collide);
 
 		//TODO add to global universe list of constraints for 
 		// iteration / auto freeing on destroy universe
 		
-		return (void*)hinge2;	
+		return (void*)hinge2;
 }
 
 void hinge2setLowerLimit(void* h, float l) {
@@ -164,6 +164,34 @@ void hinge2setLowerLimit(void* h, float l) {
 }
 void hinge2setUpperLimit(void* h, float l) {
 	((btHinge2Constraint*)h)->setUpperLimit(l);
+}
+
+void hinge2enableMotor(void* h, int index, bool onOff) {
+	((btHinge2Constraint*)h)->enableMotor(index, onOff);
+}
+
+void hinge2setMaxMotorForce(void* h, int index, float force) {
+	((btHinge2Constraint*)h)->setMaxMotorForce(index, force);
+}
+
+void hinge2setTargetVelocity(void* h, int index, float vel) {
+	((btHinge2Constraint*)h)->setTargetVelocity(index, vel);
+}
+
+void hinge2setDamping(void* h, int index, float damping, bool limitIfNeeded) {
+	((btHinge2Constraint*)h)->setDamping(index, damping, limitIfNeeded);
+}
+
+void hinge2setStiffness(void* h, int index, float stiffness, bool limitIfNeeded) {
+	((btHinge2Constraint*)h)->setStiffness(index, stiffness, limitIfNeeded);
+}
+
+float hinge2getAngle1(void* h) {
+    return ((btHinge2Constraint*)h)->getAngle1();
+}
+
+float hinge2getAngle2(void* h) {
+    return ((btHinge2Constraint*)h)->getAngle2();
 }
 
 void* createHingeConstraint(void* uni, void* bodyA, void* bodyB, 
@@ -186,6 +214,7 @@ void* createHingeConstraint(void* uni, void* bodyA, void* bodyB,
 	return (void*) hinge;
 
 }
+
 
 void hingeSetLimit(void* hinge, float low, float hi) {
 	((btHingeConstraint*)hinge)->setLimit(low, hi);
@@ -258,8 +287,8 @@ void bodyGetPositionAndOrientation(void* body, Vec* pos, Vec* r) {
 	
 	r->x = q.getX();
 	r->y = q.getY();
-	r->z = q.getZ();	
-	r->w = q.getW();	
+	r->z = q.getZ();
+	r->w = q.getW();
 }
 
 void bodyGetPosition(void* body, Vec* pos ) {
@@ -291,8 +320,8 @@ void bodyGetOrientation(void* body, Vec* r) {
 	
 	r->x = q.getX();
 	r->y = q.getY();
-	r->z = q.getZ();	
-	r->w = q.getW();	
+	r->z = q.getZ();
+	r->w = q.getW();
 }
 
 int bodyGetShapeType(void* body) {

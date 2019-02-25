@@ -11,8 +11,8 @@ OBJkaz=$(SRCkaz:../../kazmath/kazmath/%.c=obj/kaz/%.o)
 
 CC=gcc
 
-main: $(OBJ) $(OBJkaz) obj/capi.o
-	g++ obj/capi.o $(OBJ) $(OBJkaz) -o main $(LDFLAGS)
+main: $(OBJ) $(OBJkaz)
+	g++ $(OBJ) ../capi/capi.a ../capi/lib/libbullet.a $(OBJkaz) -o main $(LDFLAGS)
 
 $(OBJ): obj/%.o : src/%.c
 	$(CC) -std=c99 $(CFLAGS) -c $< -o $@
@@ -20,9 +20,10 @@ $(OBJ): obj/%.o : src/%.c
 $(OBJkaz): obj/kaz/%.o : ../../kazmath/kazmath/%.c
 	$(CC)  -std=c99 -c $(CFLAGS) -c $< -o $@
 
-obj/capi.o: ../capi/capi.cpp
-	g++ -c $(CFLAGS) ../capi/capi.cpp -o obj/capi.o
-	
+#obj/capi.o: ../capi/capi.cpp
+#	g++ -c $(CFLAGS) ../capi/capi.cpp -o obj/capi.o
+
+
 check: main
 	valgrind --gen-suppressions=all --suppressions=valgind.suppression.txt --track-origins=yes --leak-check=full ./main
 
