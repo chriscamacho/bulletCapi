@@ -7,11 +7,11 @@ all: test
 
 include bullet.mk
 	
-capi.a: capi.cpp
+capi.a: capi.cpp lib/libbullet.a
 	g++ $(FLAGS) capi.cpp -o obj/capi.o
 	ar rcs capi.a obj/capi.o
 
-test: obj/test.o capi.a
+test: obj/test.o capi.a 
 	g++ obj/test.o capi.a lib/libbullet.a -o test
 
 obj/test.o: test.c

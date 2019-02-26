@@ -194,12 +194,11 @@ void bodyGetPositionAndOrientation(void* body, Vec* pos, Vec* r);
 void* bodyGetShape(void* b);
 
 /** get the bodies shape type - see ShapeType enum
- * @param body
- * ---
- * 	@param T_SPHERE sphere type
- *	@param T_BOX box type
- *	@param T_CYLINDER cylinder type
- *	@param T_COMPOUND compound type
+ * @param body pointer to the body to query
+ * @param T_SPHERE sphere type
+ * @param T_BOX box type
+ * @param T_CYLINDER cylinder type
+ * @param T_COMPOUND compound type
  */
 int bodyGetShapeType(void* body);
 

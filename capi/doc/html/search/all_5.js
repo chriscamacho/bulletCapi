@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['setconstraintparam',['setConstraintParam',['../capi_8h.html#a88ef89b4805a4cec55abace835451e52',1,'capi.cpp']]],
-  ['setgravity',['setGravity',['../capi_8h.html#a6003cacda9340216eeb49067b6d8808d',1,'capi.cpp']]],
-  ['shapetype',['ShapeType',['../capi_8h.html#a5a4538eeab397888d88a4eefcc5a1345',1,'capi.h']]],
-  ['stepworld',['stepWorld',['../capi_8h.html#a470bfe1b792ff9ea4ad43413b315bda7',1,'capi.cpp']]]
+  ['universecreate',['universeCreate',['../capi_8h.html#a0352c614d462f94bd4296227384c3e54',1,'capi.cpp']]],
+  ['universedestroy',['universeDestroy',['../capi_8h.html#a36589f055ba6a9a9aef1f49c6f659c58',1,'capi.cpp']]],
+  ['universesetgravity',['universeSetGravity',['../capi_8h.html#a6497a1ac64eccb6e281667fbf51d5fd8',1,'capi.cpp']]],
+  ['universestep',['universeStep',['../capi_8h.html#a9d2bc7478eec8196f0f1c41169b02ebe',1,'capi.cpp']]]
 ];
