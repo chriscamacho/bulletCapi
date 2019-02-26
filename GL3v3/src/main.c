@@ -189,13 +189,13 @@ int main(void) {
      * 
      */
      
-    uni = createUniverse();
-    setGravity(uni, 0,-9.98,0);
+    uni = universeCreate();
+    universeSetGravity(uni, 0,-9.98,0);
 
 	{ // ground
 		Vec sz = {200, 5, 200};
-		void* groundShape = createBoxShape(uni, sz.x, sz.y, sz.z);	// size 20, 5, 20
-		phys[0].body = createBody(uni, groundShape, 0, 180, 20, -180);	// 0 mass == static pos 0,0,-5
+		void* groundShape = shapeCreateBox(uni, sz.x, sz.y, sz.z);	// size 20, 5, 20
+		phys[0].body = bodyCreate(uni, groundShape, 0, 180, 20, -180);	// 0 mass == static pos 0,0,-5
 		#define SLOPE 4.f
 
 		bodySetRestitution(phys[0].body, 1.f);
@@ -210,14 +210,14 @@ int main(void) {
 	{ // paddle thingie to move other shapes about
     
 		Vec sz = {2, .5, 4};
-		void* shp = createBoxShape(uni, sz.x, sz.y, sz.z);
-		phys[1].body = createBody(uni, shp, 0,  -4.2, 8, 0);
+		void* shp = shapeCreateBox(uni, sz.x, sz.y, sz.z);
+		phys[1].body = bodyCreate(uni, shp, 0,  -4.2, 8, 0);
 		bodySetRotationEular(phys[1].body, 0.01745329252f * SLOPE, 0, 0.01745329252f * SLOPE);
 		phys[1].sz = sz;
 		
 		sz = (Vec){8, 8, .5};
-		shp = createBoxShape(uni, sz.x, sz.y, sz.z);
-		phys[2].body = createBody(uni, shp, 40,  0.2, 8, 0);
+		shp = shapeCreateBox(uni, sz.x, sz.y, sz.z);
+		phys[2].body = bodyCreate(uni, shp, 40,  0.2, 8, 0);
 		phys[2].sz = sz;
 		bodySetDeactivation(phys[2].body, false);
 	
@@ -229,13 +229,13 @@ int main(void) {
 		pivB = (Vec){-8,0,0};
 		rotB = (Vec){0,1.5707963268,0};
 		
-		hinge = createHingeConstraint(uni, phys[1].body, phys[2].body, pivA, rotA, 
+		hinge = hingeCreate(uni, phys[1].body, phys[2].body, pivA, rotA, 
 									pivB, rotB, false, false);
 		hingeSetLimit(hinge, -PI / 2.0f , PI / 2.0f); // > pi == unlimited
 		hingeEnableAngularMotor(hinge, true, 
 						-4, 10);
-		setConstraintParam(hinge, C_ERP, 1, -1);
-		setConstraintParam(hinge, C_CFM, 0, -1);
+		constraintSetParam(hinge, C_ERP, 1, -1);
+		constraintSetParam(hinge, C_CFM, 0, -1);
 
 		
 	}
@@ -256,56 +256,59 @@ int main(void) {
         //chass = createBoxShape(uni, 1.f, 0.5f, 2.f);
 		//vehicleShape = createCompoundShape(uni);
 		//compoundAddChild(vehicleShape, chass, 0, 1, 0, 0,0,0);
-		vehicleShape = createBoxShape(uni, 1.f, 0.5f, 2.f);
+		vehicleShape = shapeCreateBox(uni, 1.f, 0.5f, 2.f);
         #define fheight 4.f
-		vehicleBody = createBody(uni, vehicleShape, 8, 40, fheight, 0);
+		vehicleBody = bodyCreate(uni, vehicleShape, 200, 40, fheight, 0);
         
 
 		Vec wheelPos[4] = {
-			{40-1,fheight-1.2, 1.75},
-			{40+1,fheight-1.2, 1.75},
-			{40+1,fheight-1.2,-1.75},
-			{40-1,fheight-1.2,-1.75}
+			{40-1.5,fheight-1.25, 2},
+			{40+1.5,fheight-1.25, 2},
+			{40+1.5,fheight-1.25,-2},
+			{40-1.5,fheight-1.25,-2}
 		};
 
         bodySetDeactivation(vehicleBody, false);
-        void* wheelShape = createCylinderShapeX(uni, 0.5, 0.4);
+        void* wheelShape = shapeCreateCylinderX(uni, 0.5, 0.4);
 
 		for (int i = 0; i<4; i++) {
 
-			wheelBody[i] = createBody(uni, wheelShape, 2, 
+			wheelBody[i] = bodyCreate(uni, wheelShape, 1, 
                                             wheelPos[i].x, 
                                             wheelPos[i].y, 
                                             wheelPos[i].z);
-            bodySetFriction(wheelBody[i],1111);
+            bodySetFriction(wheelBody[i],1000);
             bodySetDeactivation(wheelBody[i], false);
             
             Vec parentAxis = {0,1,0};
             Vec childAxis = {1,0,0};
             //Vec anchor = {20,fheight,0};
             Vec anchor = wheelPos[i];
-            wheelConstr[i] = createHinge2Constraint(uni, vehicleBody, wheelBody[i],
+            wheelConstr[i] = hinge2Create(uni, vehicleBody, wheelBody[i],
                                     anchor, parentAxis, childAxis, true);
 
             
             if (i<2) { // engine motor
                 hinge2enableMotor(wheelConstr[i], engineAxis, true);
-                hinge2setMaxMotorForce(wheelConstr[i], engineAxis, 1000);
+                hinge2setMaxMotorForce(wheelConstr[i], engineAxis, 100);
                 hinge2setTargetVelocity(wheelConstr[i], engineAxis, 0);
+
+                hinge2enableMotor(wheelConstr[i], steeringAxis, true);
+                hinge2setMaxMotorForce(wheelConstr[i], steeringAxis, 100);
+                hinge2setTargetVelocity(wheelConstr[i], steeringAxis, 0);
+                hinge2setLowerLimit(wheelConstr[i], -.5);
+                hinge2setUpperLimit(wheelConstr[i], .5);
+            } else {
+                hinge2setLowerLimit(wheelConstr[i], 0);
+                hinge2setUpperLimit(wheelConstr[i], 0);
             }
-            // steering (locks steering axis on engine too)
-            hinge2enableMotor(wheelConstr[i], steeringAxis, true);
-            hinge2setMaxMotorForce(wheelConstr[i], steeringAxis, 1000);
-            hinge2setTargetVelocity(wheelConstr[i], steeringAxis, 0);
-            //hinge2setLimit(wheelConstr[i], steeringAxis, -PI / 8.0f, PI / 8.0f);
+            constraintSetParam(wheelConstr[i], C_CFM, 1.f, suspensionAxis);//0.15f, 2);
+            constraintSetParam(wheelConstr[i], C_ERP, 1.f, suspensionAxis); //0.35f, 2);
 
-            setConstraintParam(wheelConstr[i], C_CFM, 1.f, suspensionAxis);//0.15f, 2);
-            setConstraintParam(wheelConstr[i], C_ERP, 1.f, suspensionAxis); //0.35f, 2);
+            hinge2setDamping(wheelConstr[i],  suspensionAxis, 40.0, true);
+            hinge2setStiffness(wheelConstr[i], suspensionAxis, 2000.0, false);
 
-            hinge2setDamping(wheelConstr[i],  suspensionAxis, 20.0, true);
-            hinge2setStiffness(wheelConstr[i], suspensionAxis, 40.0, true);
-            
-		}
+        }
 	}
     
 	/*
@@ -325,28 +328,28 @@ int main(void) {
         // 60, 120, 180, 240
         if (i<30) {
 			// for lazyness all compounds are identical having exactly shapes
-			fs = createCompoundShape(uni);
-			void* c = createSphereShape(uni, 1.f);
+			fs = shapeCreateCompound(uni);
+			void* c = shapeCreateSphere(uni, 1.f);
 			compoundAddChild(fs, c, -1.5f, 0, 0, 0,0,0);
-			c = createSphereShape(uni, 1.f);
+			c = shapeCreateSphere(uni, 1.f);
 			compoundAddChild(fs, c, 1.5f, 0, 0, 0,0,0);
 			// box made long on wrong axis to check local
 			// orientation changes of shape on the compound works
-			c = createBoxShape(uni, 3.f, 0.5f, 0.5f);
+			c = shapeCreateBox(uni, 3.f, 0.5f, 0.5f);
 			compoundAddChild(fs, c, 0,1.f,0, 0.01745329252f * 90,0,0);
 		} else {
 			if (i<105) {
-				fs = createBoxShape(uni, sx, sy, sz);
+				fs = shapeCreateBox(uni, sx, sy, sz);
 			} else {
 				if (i<150) {
 					sy=sx;
 					sz=sx;
-					fs = createSphereShape(uni, sx);
+					fs = shapeCreateSphere(uni, sx);
 				} else {
 					sx /= 2.0f;
 					sy = sx;
 					sz *= 2.0f;
-					fs = createCylinderShapeZ(uni, sx, sz);
+					fs = shapeCreateCylinderZ(uni, sx, sz);
 				}
 			}
 		}
@@ -356,7 +359,7 @@ int main(void) {
         float px = 20.f-rnd(40.f);
         float py = 30.f-rnd(8.f);
         float pz = 20.f-rnd(40.f);
-        phys[i].body = createBody(uni, fs, (.5f+sx)*(.5f+sy)*(.5f+sz),  px, py, pz);
+        phys[i].body = bodyCreate(uni, fs, (.5f+sx)*(.5f+sy)*(.5f+sz),  px, py, pz);
         
         bodySetRotationEular(phys[i].body, rnd(6.28318530718), rnd(6.28318530718), rnd(6.28318530718));
         bodySetFriction(phys[i].body, .4);
@@ -385,7 +388,7 @@ int main(void) {
         glClearColor(0.25f,0.5f,1.f,1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        stepWorld(uni, 1.f/60.f, 8);
+        universeStep(uni, 1.f/60.f, 8);
         
         hingeCount++;
         if (hingeCount > 80) {
@@ -486,17 +489,25 @@ int main(void) {
 				}
 			}
         }
+        
+        
+        /*
+         * 
+         * handle vehicle control
+         * 
+         * 
+         */
 
         bool noSteer;
         noSteer = true;
         float a1 = hinge2getAngle1(wheelConstr[0]);
         float a2 = hinge2getAngle1(wheelConstr[1]);
         #define mt .5
-        if (glfwGetKey(window, GLFW_KEY_LEFT) && a1>-mt && a2>-mt) {
+        if (glfwGetKey(window, GLFW_KEY_LEFT) ) {
             noSteer = false;
             steer+=1;
         }
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) && a1<mt && a2<mt) {
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) ) {
             noSteer = false;
             steer-=1;
         }
@@ -517,7 +528,7 @@ int main(void) {
         
         if (glfwGetKey(window, GLFW_KEY_UP)) {
             engine+=1;
-            if (engine>10) engine=10;
+            if (engine>40) engine=40;
         } else {
             engine*=.99f;
         }
@@ -568,7 +579,7 @@ int main(void) {
     // just to catch anything missed...
     glCheckError(__FILE__,__LINE__);
 
-	destroyUniverse(uni);
+	universeDestroy(uni);
 
     glfwDestroyWindow(window);
 

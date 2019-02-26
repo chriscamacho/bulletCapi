@@ -1,7 +1,7 @@
 #include "capi.hpp"
 #include "btBulletDynamicsCommon.h"
 
-void* createUniverse() {
+void* universeCreate() {
 	universe* u = (universe*)malloc(sizeof(universe));
 	u->collisionConfiguration = new btDefaultCollisionConfiguration();
 	u->dispatcher = new btCollisionDispatcher(u->collisionConfiguration);
@@ -21,16 +21,16 @@ void* createUniverse() {
 	return (void*)u;
 }
 
-void removeBody(void* u, void* b) {
+void bodyRemove(void* u, void* b) {
 	UNI(u)->dynamicsWorld->removeRigidBody(BODY(b));
 }
 
-void deleteShape(void* u, void* s) {
+void shapeDelete(void* u, void* s) {
 	UNI(u)->collisionShapes->remove(SHAPE(s));
 	delete SHAPE(s);
 }
 
-void deleteBody(void* b) {
+void bodyDelete(void* b) {
 	if (BODY(b) && BODY(b)->getMotionState()) {
 		delete BODY(b)->getMotionState();
 	}
@@ -49,7 +49,7 @@ void compoundRemoveShape(void* s, int index) {
 	((btCompoundShape*)s)->removeChildShapeByIndex(index);
 }
 
-void destroyUniverse(void* u) {
+void universeDestroy(void* u) {
 	
 	for (int i = UNI(u)->dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 	{
@@ -87,17 +87,17 @@ void destroyUniverse(void* u) {
 	free(u);
 }
 
-void setGravity(void* u, float x, float y, float z) {
+void universeSetGravity(void* u, float x, float y, float z) {
 	UNI(u)->dynamicsWorld->setGravity(btVector3(x,y,z));
 }
 
-void* createBoxShape(void* u, float ex, float ey, float ez) {
+void* shapeCreateBox(void* u, float ex, float ey, float ez) {
 	btCollisionShape* shape = new btBoxShape(btVector3(btScalar(ex), btScalar(ey), btScalar(ez)));
 	UNI(u)->collisionShapes->push_back(shape);
 	return (void*)shape;
 }
 
-void* createCompoundShape(void* u) {
+void* shapeCreateCompound(void* u) {
 	btCollisionShape* shape = new btCompoundShape();
 	UNI(u)->collisionShapes->push_back(shape);
 	return (void*)shape;
@@ -117,31 +117,31 @@ void compoundAddChild(void* compound, void* child, float x, float y, float z,
 	((btCompoundShape*)compound)->addChildShape(localTrans,SHAPE(child));
 }
 
-void* createSphereShape(void* u, float re) {
+void* shapeCreateSphere(void* u, float re) {
 	btCollisionShape* shape = new btSphereShape(re);
 	UNI(u)->collisionShapes->push_back(shape);
 	return (void*)shape;
 }
 
-void* createCylinderShapeZ(void* u,  float r, float l) {
+void* shapeCreateCylinderZ(void* u,  float r, float l) {
 	btCollisionShape* shape = new btCylinderShapeZ(btVector3(r,r,l));
 	UNI(u)->collisionShapes->push_back(shape);
 	return (void*)shape;	
 }
 
-void* createCylinderShapeY(void* u,  float r, float l) {
+void* shapeCreateCylinderY(void* u,  float r, float l) {
 	btCollisionShape* shape = new btCylinderShape(btVector3(r,l,r));
 	UNI(u)->collisionShapes->push_back(shape);
 	return (void*)shape;	
 }
 
-void* createCylinderShapeX(void* u,  float r, float l) {
+void* shapeCreateCylinderX(void* u,  float r, float l) {
 	btCollisionShape* shape = new btCylinderShapeX(btVector3(l,r,r));
 	UNI(u)->collisionShapes->push_back(shape);
 	return (void*)shape;	
 }
 
-void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
+void* hinge2Create(void* u, void* bodyA, void* bodyB, Vec anchor,
 								Vec parentAxis, Vec childAxis, bool collide) {
 
 		btVector3 anc(anchor.x, anchor.y, anchor.z);
@@ -194,7 +194,7 @@ float hinge2getAngle2(void* h) {
     return ((btHinge2Constraint*)h)->getAngle2();
 }
 
-void* createHingeConstraint(void* uni, void* bodyA, void* bodyB, 
+void* hingeCreate(void* uni, void* bodyA, void* bodyB, 
 					Vec pivA, Vec rotA, 
 					Vec pivB, Vec rotB, bool refA, bool collide) {
 
@@ -235,19 +235,19 @@ void hingeEnableAngularMotor(void* hinge, bool enableMotor,
 	//return ((btHingeConstraint*)hinge)->getHingeAngle(transA, transB);
 //}
 
-void setConstraintParam(void* c, int num, float value, int axis) {
+void constraintSetParam(void* c, int num, float value, int axis) {
 	JOINT(c)->setParam(num, value, axis);
 }
 
-bool isConstraintEnabled(void* c) {
+bool constraintIsEnabled(void* c) {
 	return JOINT(c)->isEnabled();
 }
  
-void setConstraintEnabled(void* c, bool en) {
+void constraintSetEnabled(void* c, bool en) {
 	JOINT(c)->setEnabled(en);
 }
 
-void* createBody(void* u, void* shape, float mass, float x, float y, float z) {
+void* bodyCreate(void* u, void* shape, float mass, float x, float y, float z) {
 	// heavily "influenced" from bullet manual hello world console example
 	btTransform trans;
 	trans.setIdentity();
@@ -268,7 +268,7 @@ void* createBody(void* u, void* shape, float mass, float x, float y, float z) {
 	return body;
 }
 
-void stepWorld(void* u, float dt, int i) {
+void universeStep(void* u, float dt, int i) {
 	UNI(u)->dynamicsWorld->stepSimulation(dt, i);
 }
 

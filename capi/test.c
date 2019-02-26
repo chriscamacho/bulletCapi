@@ -18,19 +18,19 @@ void contact(void* b1, void* b2, const Vec* ptA, const Vec* ptB, const Vec* norm
 
 int main(int argc, char* argv[]) {
 
-	void* uni = createUniverse();
+	void* uni = universeCreate();
 	
-	setGravity(uni, 0, 0, -9.98);
+	universeSetGravity(uni, 0, 0, -9.98);
 	
-	void* groundShape = createBoxShape(uni, 100, 100, 5);	// size 100,100,5
-	groundBody = createBody(uni, groundShape, 0, 0, 0, -5);	// 0 mass == static pos 0,0,-5
+	void* groundShape = shapeCreateBox(uni, 100, 100, 5);	// size 100,100,5
+	groundBody = bodyCreate(uni, groundShape, 0, 0, 0, -5);	// 0 mass == static pos 0,0,-5
 	bodySetRestitution(groundBody, .9);
 	
-	void* fallingShape = createSphereShape(uni, 1.);
+	void* fallingShape = shapeCreateSphere(uni, 1.);
 	//void* fallingShape = createBoxShape(uni, .5, .5, .5);
 	//void* fallingShape = createCylinderShapeY(uni, .5, 1);
 	
-	fallingBody = createBody(uni, fallingShape, 10, 0, 0, 1.01);
+	fallingBody = bodyCreate(uni, fallingShape, 10, 0, 0, 1.01);
 	printf("shape type = %i\n",bodyGetShapeType(fallingBody));
 	bodySetRestitution(fallingBody, .9);
 	printf("ball friction was %lf\n",bodyGetFriction(fallingBody));
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 	bodyApplyImpulse(fallingBody, &imp, &pos);
 
 	for (int i = 0; i < 18; i++) {
-		stepWorld(uni, 1./120., 8);
+		universeStep(uni, 1./120., 8);
 		
 		collisionCallback(uni, &contact );
 		
@@ -63,6 +63,6 @@ int main(int argc, char* argv[]) {
 		printf(" v=%2.4lf %2.4lf %2.4lf \n", pos.x, pos.y, pos.z);
 	}	
 
-	destroyUniverse(uni);
+	universeDestroy(uni);
 
 }

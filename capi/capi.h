@@ -117,123 +117,6 @@ typedef enum  {
 	C_STOP_CFM		//BT_CONSTRAINT_STOP_CFM
 } ConstraintParams;
 
-/** creates a physics environment 
- * @return pointer to the environment 
- */
-void* createUniverse();
-/** releases the environment
- * @param uni pointer to the previously created environment
- */
-void destroyUniverse(void* uni); /// muhahahaha
-
-/** sets the environments gravity */
-void setGravity(void* uni, float x, float y, float z);
-/** step the world
- * @param u the environment to step
- * @param dt the amount of time to step
- * @param i number of iterations 
- */
-void stepWorld(void* u, float dt, int i);
-
-/** set the collision callback
- * @param u the universe
- * @param callback function pointer to the contact callback
- * 
- * void contact(void* b1, void* b2, const Vec* ptA, const Vec* ptB, const Vec* norm)
- * @param b1 body A
- * @param b2 body B
- * @param ptA point in body A of the contact
- * @param ptB point in body B of the contact
- * @param norm the collision normal
- */
-void collisionCallback(void* u, void(*callback)(void*, void*, const Vec*, const Vec*, const Vec*) );
-
-/** creat a box shape
- * @param uni the universe that the shape is intended for
- * 			this is for tidying up when the universe is destroyed
- * @param ex X extent of the box
- * @param ey Y extent of the box
- * @param ez Z extent of the box
- */ 
-void* createBoxShape(void* uni, float ex, float ey, float ez);
-
-/** creates a sphere shape
- * @param u the universe that releases this shape
- * @param re radius of sphere
- */
-void* createSphereShape(void* u, float re);
-
-/** creates a cylinder shape, length along the Z axis
- * @param u the universe that releases this shape
- * @param r the radius of the cylinder
- * @param l the length of the cylinder
- */
-void* createCylinderShapeZ(void* u,  float r, float l);
-
-/** creates a cylinder shape, length along the Y axis
- * @param u the universe that releases this shape
- * @param r the radius of the cylinder
- * @param l the length of the cylinder
- */
-void* createCylinderShapeY(void* u,  float r, float l);
-
-/** creates a cylinder shape, length along the X axis
- * @param u the universe that releases this shape
- * @param r the radius of the cylinder
- * @param l the length of the cylinder
- */
-void* createCylinderShapeX(void* u,  float r, float l);
-
-/** create a compound shape
- * @param u the universe that releases this shape
- * 
- * The compound shape is a "empty" shape you add other shapes
- * to to make a single shape from.
- */
-void* createCompoundShape(void* u);
-
-/** adds other primatives to the compound shape
- * @param compound pointer to the compound shape
- * @param child pointer to the child shape
- * @param x,y,z local position of shape in the compound
- * @param yaw,pitch,roll local rotation in the compound
- */
-void compoundAddChild(void* compound, void* child, float x, float y, float z,
-						float yaw, float pitch, float roll);
-
-/** create a body
- * @param u the universe or environment the body is in
- * @param shape pointer to the shape to create the body with
- * @param mass mass of the body
- * @param x,y,z position to start the body from
- */
-void* createBody(void* u, void* shape, float mass, float x, float y, float z);
-
-/** get the bodies position
- * @param body
- * @param pos the supplied structured is filled in with the position
- */
-void bodyGetPosition(void* body, Vec* pos );
-
-/** get body orientation
- * @param body
- * @param r rotation returned in this Vec
- */
-void bodyGetOrientation(void* body, Vec* r);
-
-/** get the position and orientation of a body
- * @param body
- * @param pos the position
- * @param r the rotation
- */
-void bodyGetPositionAndOrientation(void* body, Vec* pos, Vec* r);
-
-/** get a matrix representing the orientaion and position of a body
- * @param body
- * @param m the pointer to a matrix struct (16 floats) can be directly
- * used by OpenGL
- */
-void bodyGetOpenGLMatrix(void* body, float* m);
 
 /** apply an impulse to a body
  * @param body
@@ -248,19 +131,18 @@ void bodyApplyImpulse(void* body, Vec* i, Vec* p);
  */
 void bodyApplyTorque(void* body, Vec* t);
 
-/** get the linear velocity of a body
- * @param body
- * @param v pointer to a Vec for the velocity
+/** create a body
+ * @param u the universe or environment the body is in
+ * @param shape pointer to the shape to create the body with
+ * @param mass mass of the body
+ * @param x,y,z position to start the body from
  */
-void bodyGetLinearVelocity(void* body, Vec* v);
+void* bodyCreate(void* u, void* shape, float mass, float x, float y, float z);
 
-/** set the velocity of a body - 
- * this should not be used every frame rather this should be used one
- * off in special circumstances like teleportation.
- * @param body
- * @param v the velocity
+/** delete a body (release its resources)
+ * @param b body
  */
-void bodySetLinearVelocity(void* body, Vec v);
+void bodyDelete(void* b);
 
 /** get the angular velocity
  * @param body
@@ -268,57 +150,70 @@ void bodySetLinearVelocity(void* body, Vec v);
  */
 void bodyGetAngularVelocity(void* body, Vec* v);
 
-/** set angluar velocity - see notes in bodySetLinearVelocity
- * @param body
- * @param v velocity
- */
-void bodySetAngularVelocity(void* body, Vec v);
-
-/** set the rotation of the body (in radians)
- * @param body
- * @param pitch,yaw,roll rotations around the x,y & z axis respectivly
- */
-void bodySetRotationEular(void* body, float pitch, float yaw, float roll);
-
-/** set the rotation of a body as bodySetRotationEular except using a Vec
- * @param body
- * @param r the rotation
- */
- 
-/** sets a bodies rotation - see warning in bodySetLinearVelocity
- * @param body
- * @param r rotation
- */
-void bodySetRotation(void* body, Vec r);
-
-/** set the restitution of a body (bouncy-ness)
- * @param body
- * @param r restitution
- */
-void bodySetRestitution(void* body, float r);
-
-/** set bodies friction
- * @param s the body
- * @param f friction
- */ 
-void bodySetFriction(void* s, float f);
-
 /** get the bodies friction setting
  * @param s body
  * @return friction setting
  */
 float bodyGetFriction(void* s);
 
-/** set the bodies position - see notes in bodySetLinearVelocity
+/** get the linear velocity of a body
+ * @param body
+ * @param v pointer to a Vec for the velocity
+ */
+void bodyGetLinearVelocity(void* body, Vec* v);
+
+/** get a matrix representing the orientaion and position of a body
+ * @param body
+ * @param m the pointer to a matrix struct (16 floats) can be directly
+ * used by OpenGL
+ */
+void bodyGetOpenGLMatrix(void* body, float* m);
+
+/** get body orientation
+ * @param body
+ * @param r rotation returned in this Vec
+ */
+void bodyGetOrientation(void* body, Vec* r);
+
+/** get the bodies position
+ * @param body
+ * @param pos the supplied structured is filled in with the position
+ */
+void bodyGetPosition(void* body, Vec* pos );
+
+/** get the position and orientation of a body
  * @param body
  * @param pos the position
+ * @param r the rotation
  */
-void bodySetPosition(void* body, Vec pos );
+void bodyGetPositionAndOrientation(void* body, Vec* pos, Vec* r);
+
+/** get the shape attached to the body
+ * @param b body
+ */
+void* bodyGetShape(void* b);
 
 /** get the bodies shape type - see ShapeType enum
  * @param body
+ * ---
+ * 	@param T_SPHERE sphere type
+ *	@param T_BOX box type
+ *	@param T_CYLINDER cylinder type
+ *	@param T_COMPOUND compound type
  */
 int bodyGetShapeType(void* body);
+
+/** remove body from the universe
+ * @param u universe pointer
+ * @param b body
+ */
+void bodyRemove(void* u, void* b);
+
+/** set angluar velocity - see notes in bodySetLinearVelocity
+ * @param body
+ * @param v velocity
+ */
+void bodySetAngularVelocity(void* body, Vec v);
 
 /** set body deactivation
  * @param b body
@@ -326,142 +221,65 @@ int bodyGetShapeType(void* body);
  */
 void bodySetDeactivation(void* b, bool v);
 
-
-/** create a hinge2 constraint
- * @param u universe
- * @param bodyA parent body constrained
- * @param bodyB child body constrained
- * @param anchor constraint centre
- * @param parentAxis orientation of parent
- * @param childAxis orientation of child
- */
-void* createHinge2Constraint(void* u, void* bodyA, void* bodyB, Vec anchor,
-								Vec parentAxis, Vec childAxis, bool collide);
-
-/**  set the lower limit of a hinge2 constraint
- * @param h pointer to the hinge2
- * @param l value of the limit
- */
-void hinge2setLowerLimit(void* h, float l);
-
-/**  set the upper limit of a hinge2 constraint
- * @param h pointer to the hinge2
- * @param l value of the limit
- */
-void hinge2setUpperLimit(void* h, float l);
-
-/** enable (or disable) a motor on a hinge2 constraint
- * @param h pointer to hinge2 constraint
- * @param index which motor to effect
- * @param onOff true for on, false for off
- */
-void hinge2enableMotor(void* h, int index, bool onOff);
-
-/** set the maximum motor force for a hinge2 motor
- * @param h pointer to hinge2 constraint
- * @param index which motor to change
- * @param force maximum force
- */
-void hinge2setMaxMotorForce(void* h, int index, float force);
-
-/** set the target velocity for a hinge2 axis motor
- * @param h pointer to hinge2 constraint
- * @param index which axis
- * @param vel the target velocity
- */
-void hinge2setTargetVelocity(void* h, int index, float vel);
-
-/** sets damping for a hinge2 axis
- * @param h pointer to hinge2 constraint
- * @param index the axis
- * @param damping how much damping for the axis
- * @param limitIfNeeded normally defaults to true
- */
-void hinge2setDamping(void* h, int index, float damping, bool limitIfNeeded);
-
-/** sets stifness for a hinge2 axis
- * @param h pointer to hinge2 constraint
- * @param index the axis
- * @param stiffness how stiff the axis is
- * @param limitIfNeeded normally defaults to true
- */
-void hinge2setStiffness(void* h, int index, float stiffness, bool limitIfNeeded);
-
-float hinge2getAngle1(void* h);
-float hinge2getAngle2(void* h);
-
-/** creates a hinge constraint (joint)
- * @param uni the universe the joint should be in
- * @param bodyA,bodyB the two bodies involved
- * @param pivA,rotA the pivot point and rotation of the hinge axis
- * @param pivB,rotB pivot and rotation relative to bodyB
- * @param refA use reference frame A or not
- * @param collide should these bodies collide or not
- */
-void* createHingeConstraint(void* uni, void* bodyA, void* bodyB, 
-					Vec pivA, Vec rotA, 
-					Vec pivB, Vec rotB, bool refA, bool collide);
-
-/** set the hinge angluar limit
- * @param hinge pointer to the joint
- * @param low set the lower limit  < -PI is unlimited
- * @param hi set the upper limit  > PI is unlimited
- */
-void hingeSetLimit(void* hinge, float low, float hi);
-
-/** enable rotational motor for a hinge
- * @param hinge pointer to the constraint
- * @param enableMotor true enable
- * @param targetVelocity the motor will always try to achive this velocity
- * @param maxMotorImpulse limits the impulse the motor can use
- */
-void hingeEnableAngularMotor(void* hinge, bool enableMotor, float targetVelocity,
-								float maxMotorImpulse);
-
-//float hingeGetAngle(void* hinge);
-
-/** sets a constrains parameters
- * @param c constraint pointer
- * @param num see ConstraintParams enum
- * @param value
- * @param axis 0-5 but see implementation as some are handled differently
- * for example hinge only uses axis 5 (which can be refered to as -1)
- */
-void setConstraintParam(void* c, int num, float value, int axis);
-
-/** is a constraint enabled
- * @param c constraint pointer
- */
-bool isConstraintEnabled(void* c);
-
-/** enable or disable a constraint
- * @param c constraint pointer
- * @param en true or false to enable / disable
+/** set bodies friction
+ * @param s the body
+ * @param f friction
  */ 
-void setConstraintEnabled(void* c, bool en);
+void bodySetFriction(void* s, float f);
 
-
-/** remove body from the universe
- * @param u universe pointer
- * @param b body
+/** set the velocity of a body - 
+ * this should not be used every frame rather this should be used one
+ * off in special circumstances like teleportation
+ * @param body
+ * @param v the velocity
  */
-void removeBody(void* u, void* b);
+void bodySetLinearVelocity(void* body, Vec v);
 
-/** delete a shape
- * @param u universe pointer
- * @param s shape
- */ 
-void deleteShape(void* u, void* s);
-
-/** delete a body (release its resources)
- * @param b body
+/** set the bodies position - see notes in bodySetLinearVelocity
+ * @param body
+ * @param pos the position
  */
-void deleteBody(void* b);
+void bodySetPosition(void* body, Vec pos );
 
-/** get the shape attached to the body
- * @param b body
+/** set the restitution of a body (bouncy-ness)
+ * @param body
+ * @param r restitution
  */
-void* bodyGetShape(void* b);
+void bodySetRestitution(void* body, float r);
+ 
+/** sets a bodies rotation - see warning in bodySetLinearVelocity
+ * @param body
+ * @param r rotation (as a vec instead of three floats - see bodySetRotationEular)
+ */
+void bodySetRotation(void* body, Vec r);
+
+/** set the rotation of the body (in radians)
+ * @param body
+ * @param pitch,yaw,roll rotations around the x,y & z axis respectivly
+ */
+void bodySetRotationEular(void* body, float pitch, float yaw, float roll);
+
+/** set the collision callback
+ * @param u the universe
+ * @param callback function pointer to the contact callback
+ * 
+ * void contact(void* b1, void* b2, const Vec* ptA, const Vec* ptB, const Vec* norm)
+ * @param b1 body A
+ * @param b2 body B
+ * @param ptA point in body A of the contact
+ * @param ptB point in body B of the contact
+ * @param norm the collision normal
+ */
+void collisionCallback(void* u, void(*callback)(void*, void*, const Vec*, const Vec*, const Vec*) );
+
+/** adds other primatives to the compound shape
+ * @param compound pointer to the compound shape
+ * @param child pointer to the child shape
+ * @param x,y,z local position of shape in the compound
+ * @param yaw,pitch,roll local rotation in the compound
+ */
+void compoundAddChild(void* compound, void* child, float x, float y, float z,
+						float yaw, float pitch, float roll);
 
 /** number of shapes in a compound
  * @param s shape
@@ -473,6 +291,196 @@ int compoundGetNumChildren(void* s);
  * @param index
  */
 void compoundRemoveShape(void* s, int index);
+
+/** is a constraint enabled
+ * @param c constraint pointer
+ * @return is the constraint enabled?
+ */
+bool constraintIsEnabled(void* c);
+
+/** enable or disable a constraint
+ * @param c constraint pointer
+ * @param en true or false to enable / disable
+ */ 
+void constraintSetEnabled(void* c, bool en);
+
+/** sets a constrains parameters
+ * @param c constraint pointer
+ * @param num see ConstraintParams enum
+ * @param value
+ * @param axis 0-5 but see implementation as some are handled differently
+ * for example hinge only uses axis 5 (which can be refered to as -1)
+ */
+void constraintSetParam(void* c, int num, float value, int axis);
+
+/** create a hinge2 constraint
+ * @param u universe
+ * @param bodyA parent body constrained
+ * @param bodyB child body constrained
+ * @param anchor constraint centre
+ * @param parentAxis orientation of parent
+ * @param childAxis orientation of child
+ */
+void* hinge2Create(void* u, void* bodyA, void* bodyB, Vec anchor,
+								Vec parentAxis, Vec childAxis, bool collide);
+
+/** enable (or disable) a motor on a hinge2 constraint
+ * @param h pointer to hinge2 constraint
+ * @param index which motor to effect
+ * @param onOff true for on, false for off
+ */
+void hinge2enableMotor(void* h, int index, bool onOff);
+
+/** gets the angle of the first hinge
+ * @param h pointer to hinge2 constraint
+ */
+float hinge2getAngle1(void* h);
+
+/** gets the angle of the second hinge
+ * @param h pointer to hinge2 constraint
+ */
+float hinge2getAngle2(void* h);
+
+/** sets damping for a hinge2 axis
+ * @param h pointer to hinge2 constraint
+ * @param index the axis
+ * @param damping how much damping for the axis
+ * @param limitIfNeeded normally defaults to true
+ */
+void hinge2setDamping(void* h, int index, float damping, bool limitIfNeeded);
+
+/**  set the lower limit of a hinge2 constraint
+ * @param h pointer to the hinge2
+ * @param l value of the limit
+ */
+void hinge2setLowerLimit(void* h, float l);
+
+/** set the maximum motor force for a hinge2 motor
+ * @param h pointer to hinge2 constraint
+ * @param index which motor to change
+ * @param force maximum force
+ */
+void hinge2setMaxMotorForce(void* h, int index, float force);
+
+/** sets stifness for a hinge2 axis
+ * @param h pointer to hinge2 constraint
+ * @param index the axis
+ * @param stiffness how stiff the axis is
+ * @param limitIfNeeded normally defaults to true
+ */
+void hinge2setStiffness(void* h, int index, float stiffness, bool limitIfNeeded);
+
+/** set the target velocity for a hinge2 axis motor
+ * @param h pointer to hinge2 constraint
+ * @param index which axis
+ * @param vel the target velocity
+ */
+void hinge2setTargetVelocity(void* h, int index, float vel);
+
+/**  set the upper limit of a hinge2 constraint
+ * @param h pointer to the hinge2
+ * @param l value of the limit
+ */
+void hinge2setUpperLimit(void* h, float l);
+
+/** creates a hinge constraint (joint)
+ * @param uni the universe the joint should be in
+ * @param bodyA,bodyB the two bodies involved
+ * @param pivA,rotA the pivot point and rotation of the hinge axis
+ * @param pivB,rotB pivot and rotation relative to bodyB
+ * @param refA use reference frame A or not
+ * @param collide should these bodies collide or not
+ */
+void* hingeCreate(void* uni, void* bodyA, void* bodyB, 
+					Vec pivA, Vec rotA, 
+					Vec pivB, Vec rotB, bool refA, bool collide);
+
+/** enable rotational motor for a hinge
+ * @param hinge pointer to the constraint
+ * @param enableMotor true enable
+ * @param targetVelocity the motor will always try to achive this velocity
+ * @param maxMotorImpulse limits the impulse the motor can use
+ */
+void hingeEnableAngularMotor(void* hinge, bool enableMotor, float targetVelocity,
+								float maxMotorImpulse);
+
+/** set the hinge angluar limit
+ * @param hinge pointer to the joint
+ * @param low set the lower limit  < -PI is unlimited
+ * @param hi set the upper limit  > PI is unlimited
+ */
+void hingeSetLimit(void* hinge, float low, float hi);
+
+/** creat a box shape
+ * @param uni the universe that the shape is intended for
+ * 			this is for tidying up when the universe is destroyed
+ * @param ex X extent of the box
+ * @param ey Y extent of the box
+ * @param ez Z extent of the box
+ */ 
+void* shapeCreateBox(void* uni, float ex, float ey, float ez);
+
+/** create a compound shape
+ * @param u the universe that this shape is in
+ * 
+ * The compound shape is a "empty" shape you add other shapes
+ * to, to make a single more complex shape.
+ */
+void* shapeCreateCompound(void* u);
+
+/** creates a cylinder shape, length along the X axis
+ * @param u the universe that releases this shape
+ * @param r the radius of the cylinder
+ * @param l the length of the cylinder
+ */
+void* shapeCreateCylinderX(void* u,  float r, float l);
+
+/** creates a cylinder shape, length along the Y axis
+ * @param u the universe that releases this shape
+ * @param r the radius of the cylinder
+ * @param l the length of the cylinder
+ */
+void* shapeCreateCylinderY(void* u,  float r, float l);
+
+/** creates a cylinder shape, length along the Z axis
+ * @param u the universe that releases this shape
+ * @param r the radius of the cylinder
+ * @param l the length of the cylinder
+ */
+void* shapeCreateCylinderZ(void* u,  float r, float l);
+
+/** creates a sphere shape
+ * @param u the universe that releases this shape
+ * @param re radius of sphere
+ */
+void* shapeCreateSphere(void* u, float re);
+
+/** delete a shape
+ * @param u universe pointer
+ * @param s shape
+ */ 
+void shapeDelete(void* u, void* s);
+
+/** creates a physics environment 
+ * @return pointer to the environment 
+ */
+void* universeCreate();
+
+/** releases the environment
+ * @param uni pointer to the previously created environment
+ */
+void universeDestroy(void* uni); /// muhahahaha
+
+/** sets the environments gravity */
+void universeSetGravity(void* uni, float x, float y, float z);
+
+/** step the universe (time)
+ * @param u the environment to step
+ * @param dt the amount of time to step
+ * @param i number of iterations 
+ */
+void universeStep(void* u, float dt, int i);
+
 
 #endif
 
