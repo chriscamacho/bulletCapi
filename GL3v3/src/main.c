@@ -233,7 +233,7 @@ int main(void) {
 									pivB, rotB, false, false);
 		hingeSetLimit(hinge, -PI / 2.0f , PI / 2.0f); // > pi == unlimited
 		hingeEnableAngularMotor(hinge, true, 
-						-4, 10);
+						-4, 100);
 		constraintSetParam(hinge, C_ERP, 1, -1);
 		constraintSetParam(hinge, C_CFM, 0, -1);
 
@@ -251,21 +251,21 @@ int main(void) {
          * 
          */
 
-        //void* chass;
+        void* chass;
         void* vehicleShape;
-        //chass = createBoxShape(uni, 1.f, 0.5f, 2.f);
-		//vehicleShape = createCompoundShape(uni);
-		//compoundAddChild(vehicleShape, chass, 0, 1, 0, 0,0,0);
-		vehicleShape = shapeCreateBox(uni, 1.f, 0.5f, 2.f);
+        chass = shapeCreateBox(uni, 1.f, 0.5f, 2.f);
+		vehicleShape = shapeCreateCompound(uni);
+		compoundAddChild(vehicleShape, chass, 0, 0, 0, 0,0,0);
+		//vehicleShape = shapeCreateBox(uni, 1.f, 0.5f, 2.f);
         #define fheight 4.f
 		vehicleBody = bodyCreate(uni, vehicleShape, 200, 40, fheight, 0);
         
 
 		Vec wheelPos[4] = {
-			{40-1.5,fheight-1.25, 2},
-			{40+1.5,fheight-1.25, 2},
-			{40+1.5,fheight-1.25,-2},
-			{40-1.5,fheight-1.25,-2}
+			{40-1.5,fheight-.75, 2},
+			{40+1.5,fheight-.75, 2},
+			{40+1.5,fheight-.75,-2},
+			{40-1.5,fheight-.75,-2}
 		};
 
         bodySetDeactivation(vehicleBody, false);
@@ -273,7 +273,7 @@ int main(void) {
 
 		for (int i = 0; i<4; i++) {
 
-			wheelBody[i] = bodyCreate(uni, wheelShape, 1, 
+			wheelBody[i] = bodyCreate(uni, wheelShape, 20, 
                                             wheelPos[i].x, 
                                             wheelPos[i].y, 
                                             wheelPos[i].z);
@@ -290,11 +290,11 @@ int main(void) {
             
             if (i<2) { // engine motor
                 hinge2enableMotor(wheelConstr[i], engineAxis, true);
-                hinge2setMaxMotorForce(wheelConstr[i], engineAxis, 100);
+                hinge2setMaxMotorForce(wheelConstr[i], engineAxis, 200);
                 hinge2setTargetVelocity(wheelConstr[i], engineAxis, 0);
 
                 hinge2enableMotor(wheelConstr[i], steeringAxis, true);
-                hinge2setMaxMotorForce(wheelConstr[i], steeringAxis, 100);
+                hinge2setMaxMotorForce(wheelConstr[i], steeringAxis, 200);
                 hinge2setTargetVelocity(wheelConstr[i], steeringAxis, 0);
                 hinge2setLowerLimit(wheelConstr[i], -.5);
                 hinge2setUpperLimit(wheelConstr[i], .5);
@@ -302,10 +302,10 @@ int main(void) {
                 hinge2setLowerLimit(wheelConstr[i], 0);
                 hinge2setUpperLimit(wheelConstr[i], 0);
             }
-            constraintSetParam(wheelConstr[i], C_CFM, 1.f, suspensionAxis);//0.15f, 2);
-            constraintSetParam(wheelConstr[i], C_ERP, 1.f, suspensionAxis); //0.35f, 2);
+            constraintSetParam(wheelConstr[i], C_CFM, .15f, suspensionAxis);//0.15f, 2);
+            constraintSetParam(wheelConstr[i], C_ERP, .35f, suspensionAxis); //0.35f, 2);
 
-            hinge2setDamping(wheelConstr[i],  suspensionAxis, 40.0, true);
+            hinge2setDamping(wheelConstr[i],  suspensionAxis, 400.0, false);
             hinge2setStiffness(wheelConstr[i], suspensionAxis, 2000.0, false);
 
         }
@@ -395,7 +395,7 @@ int main(void) {
 			hingeCount = 0;
 			hingeDir = -hingeDir;
 			hingeEnableAngularMotor(hinge, true, 
-						hingeDir, 10);
+						hingeDir, 400);
 		}
 
         a+=0.01f;
@@ -486,7 +486,7 @@ int main(void) {
 					kmMat4Multiply(&mv, &view, &mod);
 
 					drawObj(&boxObj, sz , 3, &mvp, &mv, lightDir, viewDir);
-				}
+				} // end of create compound code
 			}
         }
         
@@ -528,7 +528,7 @@ int main(void) {
         
         if (glfwGetKey(window, GLFW_KEY_UP)) {
             engine+=1;
-            if (engine>40) engine=40;
+            if (engine>80) engine=80;
         } else {
             engine*=.99f;
         }
@@ -542,7 +542,11 @@ int main(void) {
         
         //printf("angle %f, %f\n",hinge2getAngle1(wheelConstr[0]),hinge2getAngle2(wheelConstr[0]));
         
-        // draw vehicle here
+        /*
+         * 
+         *  draw vehicle here
+         * 
+         */
         bodyGetOpenGLMatrix(vehicleBody, (float*)&mod);
         kmMat4Multiply(&mvp, &vp, &mod);
         kmMat4Multiply(&mv, &view, &mod);
