@@ -255,25 +255,25 @@ int main(void) {
         void* vehicleShape;
         chass = shapeCreateBox(uni, 1.f, 0.5f, 2.f);
 		vehicleShape = shapeCreateCompound(uni);
-		compoundAddChild(vehicleShape, chass, 0, 0, 0, 0,0,0);
+		compoundAddChild(vehicleShape, chass, 0, 1, 0, 0,0,0);
 		//vehicleShape = shapeCreateBox(uni, 1.f, 0.5f, 2.f);
         #define fheight 4.f
-		vehicleBody = bodyCreate(uni, vehicleShape, 200, 40, fheight, 0);
+		vehicleBody = bodyCreate(uni, vehicleShape, 200, 40, fheight-1, 0);
         
 
 		Vec wheelPos[4] = {
-			{40-1.5,fheight-.75, 2},
-			{40+1.5,fheight-.75, 2},
-			{40+1.5,fheight-.75,-2},
-			{40-1.5,fheight-.75,-2}
+			{40-1.5,fheight-1., 2},
+			{40+1.5,fheight-1., 2},
+			{40+1.5,fheight-1.,-2},
+			{40-1.5,fheight-1.,-2}
 		};
 
         bodySetDeactivation(vehicleBody, false);
-        void* wheelShape = shapeCreateCylinderX(uni, 0.5, 0.4);
+        void* wheelShape = shapeCreateCylinderX(uni, 0.6, 0.4);
 
 		for (int i = 0; i<4; i++) {
 
-			wheelBody[i] = bodyCreate(uni, wheelShape, 20, 
+			wheelBody[i] = bodyCreate(uni, wheelShape, 10, 
                                             wheelPos[i].x, 
                                             wheelPos[i].y, 
                                             wheelPos[i].z);
@@ -305,7 +305,7 @@ int main(void) {
             constraintSetParam(wheelConstr[i], C_CFM, .15f, suspensionAxis);//0.15f, 2);
             constraintSetParam(wheelConstr[i], C_ERP, .35f, suspensionAxis); //0.35f, 2);
 
-            hinge2setDamping(wheelConstr[i],  suspensionAxis, 400.0, false);
+            hinge2setDamping(wheelConstr[i],  suspensionAxis, 200.0, false);
             hinge2setStiffness(wheelConstr[i], suspensionAxis, 2000.0, false);
 
         }
@@ -321,22 +321,22 @@ int main(void) {
         void* fs;
         float sx,sy,sz;
         
-        sx = 0.5f+rnd(1.0f);
-        sy = 0.5f+rnd(1.0f);
-        sz = 0.5f+rnd(1.0f);
+        sx = 0.25f+rnd(.5f);
+        sy = 0.25f+rnd(.5f);
+        sz = 0.25f+rnd(.5f);
         
         // 60, 120, 180, 240
         if (i<30) {
 			// for lazyness all compounds are identical having exactly shapes
 			fs = shapeCreateCompound(uni);
-			void* c = shapeCreateSphere(uni, 1.f);
-			compoundAddChild(fs, c, -1.5f, 0, 0, 0,0,0);
+			void* c = shapeCreateSphere(uni, .5f);
+			compoundAddChild(fs, c, -.75f, 0, 0, 0,0,0);
 			c = shapeCreateSphere(uni, 1.f);
-			compoundAddChild(fs, c, 1.5f, 0, 0, 0,0,0);
+			compoundAddChild(fs, c, .75f, 0, 0, 0,0,0);
 			// box made long on wrong axis to check local
 			// orientation changes of shape on the compound works
-			c = shapeCreateBox(uni, 3.f, 0.5f, 0.5f);
-			compoundAddChild(fs, c, 0,1.f,0, 0.01745329252f * 90,0,0);
+			c = shapeCreateBox(uni, 1.5f, 0.25f, 0.25f);
+			compoundAddChild(fs, c, -.5,.5f,0, 0.01745329252f * 90,0,0);
 		} else {
 			if (i<105) {
 				fs = shapeCreateBox(uni, sx, sy, sz);
@@ -460,24 +460,24 @@ int main(void) {
 				}
 				if (s==T_COMPOUND) { // for lazyness all compounds the same
 
-					Vec sz = { 1.f, 1.f, 1.f };
+					Vec sz = { .5,.5,.5 };
 					kmMat4 t,t2;
 					
-					kmMat4Translation(&t, -1.5f,0,0);
+					kmMat4Translation(&t, -.75f,0,0);
 					kmMat4Multiply(&mod, &mod, &t);		
 					kmMat4Multiply(&mvp, &vp, &mod);
 					kmMat4Multiply(&mv, &view, &mod);
 					
 					drawObj(&ballObj, sz, 3, &mvp, &mv, lightDir, viewDir);
 					
-					kmMat4Translation(&t, 3.f,0,0);
+					kmMat4Translation(&t, .75f,0,0);
 					kmMat4Multiply(&mod, &mod, &t);
 					kmMat4Multiply(&mvp, &vp, &mod);
 					kmMat4Multiply(&mv, &view, &mod);
 					drawObj(&ballObj, sz, 3, &mvp, &mv, lightDir, viewDir);	
 					
-					sz = (Vec){3.f,.5f,.5f,0.f};
-					kmMat4Translation(&t, -1.5f,1.f,0);
+					sz = (Vec){1.5f,.25f,.25f,0.f};
+					kmMat4Translation(&t, -.5,.5f,0);
 					kmMat4RotationY(&t2, 0.01745329252f * 90.f);
 					kmMat4Multiply(&mod, &mod, &t);						
 					kmMat4Multiply(&mod, &mod, &t2);		
@@ -548,6 +548,11 @@ int main(void) {
          * 
          */
         bodyGetOpenGLMatrix(vehicleBody, (float*)&mod);
+        
+        kmMat4 t;	// 2 up to compensate for centre of gravity cheat
+        kmMat4Translation(&t,0,1,0);
+        kmMat4Multiply(&mod,&mod,&t);
+        
         kmMat4Multiply(&mvp, &vp, &mod);
         kmMat4Multiply(&mv, &view, &mod);
         Vec sz = {1,.5,2};
@@ -556,7 +561,7 @@ int main(void) {
         kmMat4 r;
         kmMat4RotationY(&r, 0.01745329252f * 90.f);
         for (int i=0; i<4; i++) {
-            Vec sz={.5,.5,.4};
+            Vec sz={.6,.6,.4};
             bodyGetOpenGLMatrix(wheelBody[i], (float*)&mod);
             kmMat4Multiply(&mod, &mod, &r);
             kmMat4Multiply(&mvp, &vp, &mod);
