@@ -23,9 +23,13 @@ void* fallingBodies[16];
 void keyOperations (void) {
     if (keyStates[27]) {
 		glutDestroyWindow(win);
-		destroyUniverse(uni);
+		universeDestroy(uni);
 		exit (0);
 	}
+}
+
+void post(int i) {
+    glutPostRedisplay();
 }
 
 void display (void) {
@@ -33,7 +37,7 @@ void display (void) {
 
     keyOperations();
     
-    stepWorld(uni, 1./60., 8);
+    universeStep(uni, 1./60., 8);
 
     glClearColor(.20f, .4f, .8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -66,6 +70,9 @@ void display (void) {
 
     glFlush();
     glutSwapBuffers();
+    
+    glutTimerFunc(1000.0/60.0, post, 1);
+    
 }
 
 void reshape (int width, int height) {
@@ -88,18 +95,18 @@ void keyUp (unsigned char key, int x, int y) {
 
 int main (int argc, char **argv) {
 	
-	uni = createUniverse();
-	setGravity(uni, 0,-9.98,0);
+	uni = universeCreate();
+	universeSetGravity(uni, 0,-9.98,0);
 
-	void* groundShape = createBoxShape(uni, 100, 5, 100);	// size 100,100,5
-	void* groundBody = createBody(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
+	void* groundShape = shapeCreateBox(uni, 100, 5, 100);	// size 100,100,5
+	void* groundBody = bodyCreate(uni, groundShape, 0, 0, -5, 0);	// 0 mass == static pos 0,0,-5
 	bodySetRestitution(groundBody, .9);
 	
-	void* fallingShape = createBoxShape(uni, .5, .5, .5);
-	fallingBodies[1] = createBody(uni, fallingShape, 10, 0, 12, -7);
+	void* fallingShape = shapeCreateBox(uni, .5, .5, .5);
+	fallingBodies[1] = bodyCreate(uni, fallingShape, 10, 0, 12, -7);
 	
-	void* fallingShape2 = createSphereShape(uni, 1.);
-	fallingBodies[0] = createBody(uni, fallingShape2, 10, 0.2, 6, -6.75);
+	void* fallingShape2 = shapeCreateSphere(uni, 1.);
+	fallingBodies[0] = bodyCreate(uni, fallingShape2, 10, 0.2, 6, -6.75);
 	
 	Vec t;
 	t.x=20;t.y=20;t.z=20;
@@ -111,9 +118,9 @@ int main (int argc, char **argv) {
 
 	
 	for (int i=2; i<15; i++) {
-		void* fs = createBoxShape(uni, 0.5, .5,.5);
-		fallingBodies[i] = createBody(uni, fs, 1,  -2,(i-2)*1.1, -9);
-		bodySetRotation(fallingBodies[i], .7,0,0);
+		void* fs = shapeCreateBox(uni, 0.5, .5,.5);
+		fallingBodies[i] = bodyCreate(uni, fs, 1,  -2,(i-2)*1.1, -9);
+		bodySetRotationEular(fallingBodies[i], .7,0,0);
 		bodySetFriction(fallingBodies[i], .8);
 	}
 	
@@ -126,7 +133,6 @@ int main (int argc, char **argv) {
     win = glutCreateWindow ("yuk");
 
     glutDisplayFunc(display);
-	glutIdleFunc(display);
 
     glutReshapeFunc(reshape);
 
