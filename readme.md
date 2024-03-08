@@ -1,3 +1,8 @@
+### Depricated not suggested for use
+
+Unfortunately over the years I have found the bullet API to be quite fragile often new versions of bullet have caused breaking changes. 
+Contrast this with the much more straight forward and more importantly *stable* API of OpenDE for example...
+
 ### Why?
 
 I wanted to use bullet physics from C (not a C++ fan)
